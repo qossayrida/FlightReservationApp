@@ -1,8 +1,10 @@
-package com.example.flightreservationapp;
+package com.example.flightreservationapp.activity;
 
 import android.os.Bundle;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.flightreservationapp.R;
 
 
 public class SignUpActivity extends AppCompatActivity {
