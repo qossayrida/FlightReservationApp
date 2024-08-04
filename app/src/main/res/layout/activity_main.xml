@@ -8,7 +8,8 @@
         android:id="@+id/emailEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Email" />
+        android:hint="Email"
+        android:layout_margin="20px" />
 
     <EditText
         android:id="@+id/passwordEditText"
@@ -17,7 +18,8 @@
         android:hint="Password"
         android:inputType="textPassword"
         android:layout_below="@id/emailEditText"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="16dp"
+        android:layout_margin="20px" />
 
     <CheckBox
         android:id="@+id/rememberMeCheckBox"
@@ -33,6 +35,7 @@
         android:layout_height="wrap_content"
         android:text="Sign In"
         android:layout_below="@id/rememberMeCheckBox"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp" />
 
     <Button
@@ -40,6 +43,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Sign Up"
+        android:layout_centerHorizontal="true"
         android:layout_below="@id/signInButton"
         android:layout_marginTop="16dp" />
 
