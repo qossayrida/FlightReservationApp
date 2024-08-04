@@ -1,43 +1,33 @@
 package com.example.flightreservationapp;
 
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import android.content.Intent;
 import android.widget.*;
-
 import androidx.appcompat.app.AppCompatActivity;
 
-public class MainActivity extends AppCompatActivity {
+
+public class SignUpActivity extends AppCompatActivity {
 
     private EditText emailEditText;
     private EditText passwordEditText;
-    private CheckBox rememberMeCheckBox;
-    private Button signInButton;
+    private EditText confirmPasswordEditText;
     private Button signUpButton;
+    private RadioGroup userRoleRadioGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_sign_up);
 
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
-        rememberMeCheckBox = findViewById(R.id.rememberMeCheckBox);
-        signInButton = findViewById(R.id.signInButton);
+        confirmPasswordEditText = findViewById(R.id.confirmPasswordEditText);
         signUpButton = findViewById(R.id.signUpButton);
+        userRoleRadioGroup = findViewById(R.id.userRoleRadioGroup);
 
-        signInButton.setOnClickListener(view -> signIn());
         signUpButton.setOnClickListener(view -> signUp());
     }
 
-    private void signIn() {
-        // Handle sign-in logic
-    }
-
     private void signUp() {
-        // Redirect to sign-up activity
-        Intent intent = new Intent(this, SignUpActivity.class);
-        startActivity(intent);
+        // Handle sign-up logic
     }
 }
-

@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".SignUpActivity">
 
     <EditText
         android:id="@+id/emailEditText"
@@ -19,28 +19,42 @@
         android:layout_below="@id/emailEditText"
         android:layout_marginTop="16dp" />
 
-    <CheckBox
-        android:id="@+id/rememberMeCheckBox"
-        android:layout_width="wrap_content"
+    <EditText
+        android:id="@+id/confirmPasswordEditText"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Remember Me"
+        android:hint="Confirm Password"
+        android:inputType="textPassword"
         android:layout_below="@id/passwordEditText"
         android:layout_marginTop="16dp" />
 
-    <Button
-        android:id="@+id/signInButton"
-        android:layout_width="wrap_content"
+    <RadioGroup
+        android:id="@+id/userRoleRadioGroup"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Sign In"
-        android:layout_below="@id/rememberMeCheckBox"
-        android:layout_marginTop="16dp" />
+        android:orientation="horizontal"
+        android:layout_below="@id/confirmPasswordEditText"
+        android:layout_marginTop="16dp">
+
+        <RadioButton
+            android:id="@+id/adminRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Admin" />
+
+        <RadioButton
+            android:id="@+id/passengerRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Passenger" />
+    </RadioGroup>
 
     <Button
         android:id="@+id/signUpButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Sign Up"
-        android:layout_below="@id/signInButton"
+        android:layout_below="@id/userRoleRadioGroup"
         android:layout_marginTop="16dp" />
 
 </RelativeLayout>
