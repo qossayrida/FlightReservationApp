@@ -2,9 +2,12 @@ package com.example.flightreservationapp.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.flightreservationapp.R;
@@ -22,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private Button signInButton;
     private Button signUpButton;
     private SharedPrefManager sharedPrefManager;
+    private ImageView rotatingImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         rememberMeCheckBox = findViewById(R.id.rememberMeCheckBox);
         signInButton = findViewById(R.id.signInButton);
         signUpButton = findViewById(R.id.signUpButton);
+        rotatingImageView = findViewById(R.id.rotatingImageView);
 
         sharedPrefManager = SharedPrefManager.getInstance(this);
 
@@ -49,6 +54,10 @@ public class MainActivity extends AppCompatActivity {
         signUpButton.setOnClickListener(view -> signUp());
 
         loadFlightData();
+
+        // Load and start the animation
+        Animation rotateAnimation = AnimationUtils.loadAnimation(this, R.anim.rotate);
+        rotatingImageView.startAnimation(rotateAnimation);
     }
 
     private void loadFlightData() {
@@ -76,4 +85,3 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 }
-

@@ -4,12 +4,26 @@
     android:layout_height="match_parent"
     tools:context=".activity.MainActivity">
 
+
+    <ImageView
+        android:id="@+id/rotatingImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/image"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="25dp" />
+
     <EditText
         android:id="@+id/emailEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Email"
-        android:layout_margin="20px" />
+        android:hint="Email ID"
+        android:drawableStart="@drawable/email_icon"
+        android:layout_below="@id/rotatingImageView"
+        android:drawablePadding="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"/>
 
     <EditText
         android:id="@+id/passwordEditText"
@@ -17,9 +31,12 @@
         android:layout_height="wrap_content"
         android:hint="Password"
         android:inputType="textPassword"
+        android:drawableStart="@drawable/password_icon"
+        android:drawablePadding="10dp"
         android:layout_below="@id/emailEditText"
-        android:layout_marginTop="16dp"
-        android:layout_margin="20px" />
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"/>
 
     <CheckBox
         android:id="@+id/rememberMeCheckBox"
@@ -27,7 +44,9 @@
         android:layout_height="wrap_content"
         android:text="Remember Me"
         android:layout_below="@id/passwordEditText"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"/>
 
     <Button
         android:id="@+id/signInButton"
@@ -46,5 +65,4 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@id/signInButton"
         android:layout_marginTop="16dp" />
-
 </RelativeLayout>
