@@ -1,6 +1,8 @@
 package com.example.flightreservationapp.activity;
 
+
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -11,11 +13,11 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.flightreservationapp.R;
-import com.example.flightreservationapp.model.Flight;
-import com.example.flightreservationapp.service.APIService;
-import com.example.flightreservationapp.utility.SharedPrefManager;
-import java.util.List;
-import java.util.Random;
+import com.example.flightreservationapp.database.*;
+import com.example.flightreservationapp.utility.*;
+import com.example.flightreservationapp.model.*;
+import com.example.flightreservationapp.service.*;
+import java.util.*;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private Button signInButton;
     private Button signUpButton;
     private SharedPrefManager sharedPrefManager;
+    private DataBaseHelper dataBaseHelper;
     private ImageView rotatingImageView;
 
     @Override
@@ -40,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         rotatingImageView = findViewById(R.id.rotatingImageView);
 
         sharedPrefManager = SharedPrefManager.getInstance(this);
+        dataBaseHelper = new DataBaseHelper(this);
 
         // Load saved credentials if they exist
         String savedUsername = sharedPrefManager.readString("userName", "");
@@ -71,17 +75,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void signIn() {
-        // Handle sign-in logic
-        if (rememberMeCheckBox.isChecked()) {
-            sharedPrefManager.writeString("userName", emailEditText.getText().toString());
-            sharedPrefManager.writeString("password", passwordEditText.getText().toString());
-            Toast.makeText(MainActivity.this, "Values written to Shared Preferences", Toast.LENGTH_SHORT).show();
+        String email = emailEditText.getText().toString();
+        String password = passwordEditText.getText().toString();
+
+        if (email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(MainActivity.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Cursor cursor = dataBaseHelper.getUser(email, password);
+        if (cursor != null && cursor.moveToFirst()) {
+            if (rememberMeCheckBox.isChecked()) {
+                sharedPrefManager.writeString("userName", emailEditText.getText().toString());
+                sharedPrefManager.writeString("password", passwordEditText.getText().toString());
+            }
+        } else {
+            Toast.makeText(MainActivity.this, "Invalid email or password", Toast.LENGTH_SHORT).show();
         }
     }
 
+
     private void signUp() {
-        // Redirect to sign-up activity
-        Intent intent = new Intent(this, SignUpActivity.class);
+        Intent intent = new Intent(this, ChooseRoleActivity.class);
         startActivity(intent);
     }
 }
+

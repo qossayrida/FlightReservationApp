@@ -1,0 +1,38 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.ChooseRoleActivity">
+
+
+    <TextView
+        android:id="@+id/chooseLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Choose the type of account you want to create:"
+        android:textSize="18sp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:padding="16dp"
+        android:textColor="@android:color/black"
+        android:textStyle="bold" />
+
+
+    <Button
+        android:id="@+id/adminButton"
+        android:layout_width="500px"
+        android:layout_height="150px"
+        android:text="Admin"
+        android:layout_below="@id/chooseLabel"
+        android:layout_centerInParent="true"
+        android:layout_margin="16dp" />
+
+    <Button
+        android:id="@+id/passengerButton"
+        android:layout_width="500px"
+        android:layout_height="150px"
+        android:text="Passenger"
+        android:layout_centerInParent="true"
+        android:layout_margin="16dp"
+        android:layout_below="@id/adminButton" />
+</RelativeLayout>

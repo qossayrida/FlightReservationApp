@@ -11,7 +11,21 @@
         android:layout_height="wrap_content"
         android:src="@drawable/image"
         android:layout_centerHorizontal="true"
-        android:layout_margin="25dp" />
+        android:layout_margin="30dp" />
+
+    <TextView
+        android:id="@+id/loginLable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rotatingImageView"
+        android:text="Login"
+        android:textSize="32sp"
+        android:textColor="#000000"
+        android:fontFamily="sans-serif"
+        android:textStyle="bold"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="15dp"/>
+
 
     <EditText
         android:id="@+id/emailEditText"
@@ -19,7 +33,7 @@
         android:layout_height="wrap_content"
         android:hint="Email ID"
         android:drawableStart="@drawable/email_icon"
-        android:layout_below="@id/rotatingImageView"
+        android:layout_below="@id/loginLable"
         android:drawablePadding="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginRight="20dp"
