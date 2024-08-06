@@ -89,6 +89,8 @@ public class MainActivity extends AppCompatActivity {
                 sharedPrefManager.writeString("userName", emailEditText.getText().toString());
                 sharedPrefManager.writeString("password", passwordEditText.getText().toString());
             }
+            Intent intent = new Intent(this, NavigationDrawerActivity.class);
+            startActivity(intent);
         } else {
             Toast.makeText(MainActivity.this, "Invalid email or password", Toast.LENGTH_SHORT).show();
         }
