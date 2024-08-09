@@ -51,6 +51,13 @@ public class Flight {
         this.recurrent = recurrent;
     }
 
+    public Flight(String flightNumber, String departurePlace, String destination,String aircraftModel) {
+        this.aircraftModel = aircraftModel;
+        this.flightNumber = flightNumber;
+        this.departurePlace = departurePlace;
+        this.destination = destination;
+    }
+
     // Getters and Setters
     public String getFlightNumber() {
         return flightNumber;

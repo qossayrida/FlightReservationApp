@@ -27,6 +27,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS USERS");
+        db.execSQL("DROP TABLE IF EXISTS FLIGHTS");
         onCreate(db);
     }
 
@@ -54,5 +55,15 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public Cursor getUser(String email, String password) {
         SQLiteDatabase db = getReadableDatabase();
         return db.rawQuery("SELECT * FROM USERS WHERE EMAIL = ? AND PASSWORD = ?", new String[]{email, password});
+    }
+
+    public Cursor getAllFlights() {
+        SQLiteDatabase db = getReadableDatabase();
+        return db.rawQuery("SELECT * FROM FLIGHTS", null);
+    }
+
+    public void deleteFlight(String flightNumber) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete("FLIGHTS", "FLIGHT_NUMBER = ?", new String[]{flightNumber});
     }
 }

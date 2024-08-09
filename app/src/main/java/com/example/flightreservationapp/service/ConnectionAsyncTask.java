@@ -3,6 +3,7 @@ package com.example.flightreservationapp.service;
 
 import android.app.Activity;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.example.flightreservationapp.activity.MainActivity;
 import com.example.flightreservationapp.model.Flight;
@@ -36,6 +37,7 @@ public class ConnectionAsyncTask extends AsyncTask<String, String, String> {
             // Handle the error and redirect
             ((MainActivity) activity).redirectToFailedLogin();
         } else {
+            Log.d("TAG", s);
             List<Flight> flights = FlightJsonParser.getObjectFromJson(s);
             ((MainActivity) activity).addToDataBase(flights);
             ((MainActivity) activity).enableButtons();

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Flight Number -->
+        <EditText
+            android:id="@+id/et_flight_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Flight Number"
+            android:inputType="text" />
+
+        <!-- Departure Place -->
+        <EditText
+            android:id="@+id/et_departure_place"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Departure Place (City)"
+            android:inputType="text" />
+
+        <!-- Destination -->
+        <EditText
+            android:id="@+id/et_destination"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Destination (City)"
+            android:inputType="text" />
+
+        <!-- Departure Date -->
+        <EditText
+            android:id="@+id/et_departure_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Departure Date"
+            android:focusable="false"
+            android:clickable="true"
+            android:inputType="none" />
+
+        <!-- Departure Time -->
+        <EditText
+            android:id="@+id/et_departure_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Departure Time"
+            android:focusable="false"
+            android:clickable="true"
+            android:inputType="none" />
+
+        <!-- Arrival Date -->
+        <EditText
+            android:id="@+id/et_arrival_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Arrival Date"
+            android:focusable="false"
+            android:clickable="true"
+            android:inputType="none" />
+
+        <!-- Arrival Time -->
+        <EditText
+            android:id="@+id/et_arrival_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Arrival Time"
+            android:focusable="false"
+            android:clickable="true"
+            android:inputType="none" />
+
+        <!-- Duration -->
+        <EditText
+            android:id="@+id/et_duration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Duration (e.g., 2h 30m)"
+            android:inputType="text" />
+
+        <!-- Aircraft Model -->
+        <EditText
+            android:id="@+id/et_aircraft_model"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Aircraft Model"
+            android:inputType="text" />
+
+        <!-- Maximum Seats -->
+        <EditText
+            android:id="@+id/et_max_seats"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Maximum Number of Seats"
+            android:inputType="number" />
+
+        <!-- Booking Open Date -->
+        <EditText
+            android:id="@+id/et_booking_open_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Booking Open Date"
+            android:focusable="false"
+            android:clickable="true"
+            android:inputType="none" />
+
+        <!-- Prices -->
+        <EditText
+            android:id="@+id/et_price_economy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Price for Economy Class"
+            android:inputType="numberDecimal" />
+
+        <EditText
+            android:id="@+id/et_price_business"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Price for Business Class"
+            android:inputType="numberDecimal" />
+
+        <EditText
+            android:id="@+id/et_price_extra_baggage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Price per Extra Baggage"
+            android:inputType="numberDecimal" />
+
+        <!-- Is Recurrent -->
+        <Spinner
+            android:id="@+id/spinner_recurrent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/recurrent_options" />
+
+        <!-- Submit Button -->
+        <Button
+            android:id="@+id/btn_submit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Create Flight" />
+
+    </LinearLayout>
+</ScrollView>
