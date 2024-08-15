@@ -12,10 +12,23 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
+        android:id="@+id/nav_view_flights"
+        android:name="com.example.flightreservationapp.activity.ui.ViewFlightsFragment"
+        android:label="@string/menu_view_flight"
+        tools:layout="@layout/fragment_view_flights" />
+
+    <fragment
         android:id="@+id/nav_create_flight"
         android:name="com.example.flightreservationapp.activity.ui.CreateFlightFragment"
         android:label="@string/menu_create_flight"
         tools:layout="@layout/fragment_create_flight" />
+
+
+    <fragment
+        android:id="@+id/nav_view_flights_not_available"
+        android:name="com.example.flightreservationapp.activity.ui.ViewFlightsNotAvailableFragment"
+        android:label="@string/menu_view_flight_not_available"
+        tools:layout="@layout/fragment_view_flights_not_available" />
 
     <fragment
         android:id="@+id/nav_edit_or_remove_flight"

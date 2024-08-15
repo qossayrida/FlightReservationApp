@@ -66,4 +66,11 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         db.delete("FLIGHTS", "FLIGHT_NUMBER = ?", new String[]{flightNumber});
     }
+
+    public Cursor getFlightsNotOpenForReservation() {
+        SQLiteDatabase db = getReadableDatabase();
+        long currentTime = System.currentTimeMillis(); // Get the current time in milliseconds
+        return db.rawQuery("SELECT * FROM FLIGHTS WHERE BOOKING_OPEN_DATE > ?", new String[]{String.valueOf(currentTime)});
+    }
+
 }

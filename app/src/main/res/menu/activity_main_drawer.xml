@@ -16,8 +16,20 @@
 
         <item
             android:id="@+id/nav_edit_or_remove_flight"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/ic_menu_camera"
             android:title="@string/menu_edit_or_remove_flight" />
+
+
+        <item
+            android:id="@+id/nav_view_flights"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="@string/menu_view_flight" />
+
+        <item
+            android:id="@+id/nav_view_flights_not_available"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="@string/menu_view_flight_not_available" />
+
 
         <item
             android:id="@+id/nav_logout"
