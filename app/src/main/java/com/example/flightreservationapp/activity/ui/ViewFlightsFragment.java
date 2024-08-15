@@ -1,11 +1,13 @@
 package com.example.flightreservationapp.activity.ui;
 
-
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -17,6 +19,7 @@ import com.example.flightreservationapp.model.Flight;
 import com.example.flightreservationapp.utility.FlightAdapter;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class ViewFlightsFragment extends Fragment {
 
@@ -36,6 +39,15 @@ public class ViewFlightsFragment extends Fragment {
         // Load all open flights
         loadOpenFlights();
 
+        // Set item click listener
+        lvOpenFlights.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Show dialog with flight information
+                showFlightDetailsDialog(openFlightList.get(position));
+            }
+        });
+
         return view;
     }
 
@@ -49,8 +61,21 @@ public class ViewFlightsFragment extends Fragment {
                 String departurePlace = cursor.getString(cursor.getColumnIndexOrThrow("DEPARTURE_PLACE"));
                 String destination = cursor.getString(cursor.getColumnIndexOrThrow("DESTINATION"));
                 String aircraftModel = cursor.getString(cursor.getColumnIndexOrThrow("AIRCRAFT_MODEL"));
+                Date departureDate = new Date(cursor.getLong(cursor.getColumnIndexOrThrow("DEPARTURE_DATE")));
+                Date departureTime = new Date(cursor.getLong(cursor.getColumnIndexOrThrow("DEPARTURE_TIME")));
+                Date arrivalDate = new Date(cursor.getLong(cursor.getColumnIndexOrThrow("ARRIVAL_DATE")));
+                Date arrivalTime = new Date(cursor.getLong(cursor.getColumnIndexOrThrow("ARRIVAL_TIME")));
+                int duration = cursor.getInt(cursor.getColumnIndexOrThrow("DURATION"));
+                int maxSeats = cursor.getInt(cursor.getColumnIndexOrThrow("MAX_SEATS"));
+                Date bookingOpenDate = new Date(cursor.getLong(cursor.getColumnIndexOrThrow("BOOKING_OPEN_DATE")));
+                double economyClassPrice = cursor.getDouble(cursor.getColumnIndexOrThrow("ECONOMY_CLASS_PRICE"));
+                double businessClassPrice = cursor.getDouble(cursor.getColumnIndexOrThrow("BUSINESS_CLASS_PRICE"));
+                double extraBaggagePrice = cursor.getDouble(cursor.getColumnIndexOrThrow("EXTRA_BAGGAGE_PRICE"));
+                Flight.RecurrentType recurrent = Flight.RecurrentType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("RECURRENT")));
 
-                Flight flight = new Flight(flightNumber, departurePlace, destination, aircraftModel);
+                Flight flight = new Flight(flightNumber, departurePlace, destination, departureDate, departureTime,
+                        arrivalDate, arrivalTime, duration, aircraftModel, maxSeats,
+                        bookingOpenDate, economyClassPrice, businessClassPrice, extraBaggagePrice, recurrent);
                 openFlightList.add(flight);
 
             } while (cursor.moveToNext());
@@ -63,5 +88,34 @@ public class ViewFlightsFragment extends Fragment {
         if (openFlightList.isEmpty()) {
             Toast.makeText(getContext(), "No flights available for reservation", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void showFlightDetailsDialog(Flight flight) {
+        String flightDetails = "Flight Number: " + flight.getFlightNumber() + "\n" +
+                "Departure Place: " + flight.getDeparturePlace() + "\n" +
+                "Destination: " + flight.getDestination() + "\n" +
+                "Aircraft Model: " + flight.getAircraftModel() + "\n" +
+                "Departure Date: " + flight.getDepartureDate() + "\n" +
+                "Departure Time: " + flight.getDepartureTime() + "\n" +
+                "Arrival Date: " + flight.getArrivalDate() + "\n" +
+                "Arrival Time: " + flight.getArrivalTime() + "\n" +
+                "Duration: " + flight.getDuration() + " minutes\n" +
+                "Max Seats: " + flight.getMaxSeats() + "\n" +
+                "Booking Open Date: " + flight.getBookingOpenDate() + "\n" +
+                "Economy Class Price: " + flight.getEconomyClassPrice() + "\n" +
+                "Business Class Price: " + flight.getBusinessClassPrice() + "\n" +
+                "Extra Baggage Price: " + flight.getExtraBaggagePrice() + "\n" +
+                "Recurrent: " + flight.getRecurrent();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Flight Details")
+                .setMessage(flightDetails)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        builder.show();
     }
 }

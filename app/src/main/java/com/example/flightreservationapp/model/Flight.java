@@ -2,7 +2,7 @@ package com.example.flightreservationapp.model;
 
 import java.util.Date;
 
-public class Flight {
+public class Flight{
     private String flightNumber;
     private String departurePlace;
     private String destination;
