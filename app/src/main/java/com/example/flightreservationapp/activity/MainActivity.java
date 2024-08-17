@@ -108,6 +108,49 @@ public class MainActivity extends AppCompatActivity {
                 sharedPrefManager.writeString("userName", emailEditText.getText().toString());
                 sharedPrefManager.writeString("password", passwordEditText.getText().toString());
             }
+
+            User user = new User();
+
+            // Get column indices safely
+            int emailIndex = cursor.getColumnIndex("EMAIL");
+            int passwordIndex = cursor.getColumnIndex("PASSWORD");
+            int phoneIndex = cursor.getColumnIndex("PHONE");
+            int firstNameIndex = cursor.getColumnIndex("FIRST_NAME");
+            int lastNameIndex = cursor.getColumnIndex("LAST_NAME");
+            int roleIndex = cursor.getColumnIndex("ROLE");
+
+            // Ensure that indices are valid (i.e., not -1) before accessing cursor data
+            if (emailIndex != -1) user.setEmail(cursor.getString(emailIndex));
+            if (passwordIndex != -1) user.setPassword(cursor.getString(passwordIndex));
+            if (phoneIndex != -1) user.setPhone(cursor.getString(phoneIndex));
+            if (firstNameIndex != -1) user.setFirstName(cursor.getString(firstNameIndex));
+            if (lastNameIndex != -1) user.setLastName(cursor.getString(lastNameIndex));
+            if (roleIndex != -1) user.setRole(cursor.getString(roleIndex));
+
+            if (user.getRole().equals("Passenger")) {
+                // Get additional columns safely for "Passenger"
+                int passportNumberIndex = cursor.getColumnIndex("PASSPORT_NUMBER");
+                int passportIssueDateIndex = cursor.getColumnIndex("PASSPORT_ISSUE_DATE");
+                int passportIssuePlaceIndex = cursor.getColumnIndex("PASSPORT_ISSUE_PLACE");
+                int passportExpirationDateIndex = cursor.getColumnIndex("PASSPORT_EXPIRATION_DATE");
+                int foodPreferenceIndex = cursor.getColumnIndex("FOOD_PREFERENCE");
+                int dateOfBirthIndex = cursor.getColumnIndex("DATE_OF_BIRTH");
+                int nationalityIndex = cursor.getColumnIndex("NATIONALITY");
+
+                // Ensure indices are valid before accessing cursor data
+                if (passportNumberIndex != -1) user.setPassportNumber(cursor.getString(passportNumberIndex));
+                if (passportIssueDateIndex != -1) user.setPassportIssueDate(cursor.getString(passportIssueDateIndex));
+                if (passportIssuePlaceIndex != -1) user.setPassportIssuePlace(cursor.getString(passportIssuePlaceIndex));
+                if (passportExpirationDateIndex != -1) user.setPassportExpirationDate(cursor.getString(passportExpirationDateIndex));
+                if (foodPreferenceIndex != -1) user.setFoodPreference(cursor.getString(foodPreferenceIndex));
+                if (dateOfBirthIndex != -1) user.setDateOfBirth(cursor.getString(dateOfBirthIndex));
+                if (nationalityIndex != -1) user.setNationality(cursor.getString(nationalityIndex));
+            }
+
+
+            String userJson = FlightJsonParser.userToJson(user);
+            sharedPrefManager.writeString("userJson", userJson);
+
             Intent intent = new Intent(this, NavigationDrawerActivity.class);
             startActivity(intent);
             finish(); // Close MainActivity

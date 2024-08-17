@@ -1,4 +1,4 @@
-package com.example.flightreservationapp.activity.ui;
+package com.example.flightreservationapp.activity.admin_fragment;
 
 import android.os.Bundle;
 
@@ -12,15 +12,9 @@ import com.example.flightreservationapp.R;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import com.example.flightreservationapp.R;
 
 import java.util.Calendar;
 

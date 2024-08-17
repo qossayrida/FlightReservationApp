@@ -1,11 +1,13 @@
 package com.example.flightreservationapp.activity;
 
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Menu;
 
-import com.google.android.material.snackbar.Snackbar;
+import com.example.flightreservationapp.model.*;
+import com.example.flightreservationapp.utility.*;
 import com.google.android.material.navigation.NavigationView;
 
 import com.example.flightreservationapp.R;
@@ -24,6 +26,8 @@ public class NavigationDrawerActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityNavigationDrawerBinding binding;
+    private SharedPrefManager sharedPrefManager;
+    private NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,11 +40,35 @@ public class NavigationDrawerActivity extends AppCompatActivity {
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
 
-        mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_create_flight, R.id.nav_edit_or_remove_flight,R.id.nav_view_flights,R.id.nav_view_flights_not_available)
-                .setOpenableLayout(drawer)
-                .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_navigation_drawer);
+        sharedPrefManager = SharedPrefManager.getInstance(this);
+        String savedUserJson = sharedPrefManager.readString("userJson", null);
+        User savedUser = null;
+        if (savedUserJson != null) {
+            savedUser = FlightJsonParser.jsonToUser(savedUserJson);
+        }
+
+        if (savedUser != null && savedUser.getRole().equals("Admin")) {
+            // Load Admin navigation graph
+            navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_navigation_drawer);
+            navController.setGraph(R.navigation.nav_admin_navigation);
+            navigationView.inflateMenu(R.menu.activity_admin_drawer);
+
+            mAppBarConfiguration = new AppBarConfiguration.Builder(
+                    R.id.nav_admin_home, R.id.nav_create_flight, R.id.nav_edit_or_remove_flight, R.id.nav_view_flights)
+                    .setOpenableLayout(drawer)
+                    .build();
+        } else if (savedUser != null && savedUser.getRole().equals("Passenger")) {
+            // Load Passenger navigation graph
+            navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_navigation_drawer);
+            navController.setGraph(R.navigation.nav_passenger_navigation);
+            navigationView.inflateMenu(R.menu.activity_passenger_drawer);
+
+            mAppBarConfiguration = new AppBarConfiguration.Builder(
+                    R.id.nav_passenger_home)
+                    .setOpenableLayout(drawer)
+                    .build();
+        }
+
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
@@ -58,7 +86,6 @@ public class NavigationDrawerActivity extends AppCompatActivity {
             drawer.closeDrawer(GravityCompat.START);
             return true;
         });
-
     }
 
     private void logout() {
@@ -73,7 +100,6 @@ public class NavigationDrawerActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_navigation_drawer);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }

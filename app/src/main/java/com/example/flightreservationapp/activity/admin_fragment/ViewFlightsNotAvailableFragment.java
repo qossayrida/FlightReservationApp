@@ -1,7 +1,5 @@
-package com.example.flightreservationapp.activity.ui;
+package com.example.flightreservationapp.activity.admin_fragment;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,6 +10,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import com.example.flightreservationapp.R;
 import com.example.flightreservationapp.database.DataBaseHelper;
@@ -21,39 +20,39 @@ import com.example.flightreservationapp.utility.FlightAdapter;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class ViewFlightsFragment extends Fragment {
+public class ViewFlightsNotAvailableFragment extends Fragment {
 
-    private ListView lvOpenFlights;
+    private ListView lvFlights;
     private DataBaseHelper dbHelper;
-    private ArrayList<Flight> openFlightList;
+    private ArrayList<Flight> flightList;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_view_flights, container, false);
+        View view = inflater.inflate(R.layout.fragment_view_flights_not_available, container, false);
 
-        lvOpenFlights = view.findViewById(R.id.lv_open_flights);
+        lvFlights = view.findViewById(R.id.lv_flights_not_available);
         dbHelper = new DataBaseHelper(getContext());
-        openFlightList = new ArrayList<>();
+        flightList = new ArrayList<>();
 
-        // Load all open flights
-        loadOpenFlights();
+        // Load all flights not yet open for reservation
+        loadFlightsNotOpenForReservation();
 
         // Set item click listener
-        lvOpenFlights.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        lvFlights.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Show dialog with flight information
-                showFlightDetailsDialog(openFlightList.get(position));
+                showFlightDetailsDialog(flightList.get(position));
             }
         });
 
         return view;
     }
 
-    private void loadOpenFlights() {
-        Cursor cursor = dbHelper.getAllFlights();
-        openFlightList.clear();
+    private void loadFlightsNotOpenForReservation() {
+        Cursor cursor = dbHelper.getFlightsNotOpenForReservation();
+        flightList.clear();
 
         if (cursor != null && cursor.moveToFirst()) {
             do {
@@ -76,16 +75,16 @@ public class ViewFlightsFragment extends Fragment {
                 Flight flight = new Flight(flightNumber, departurePlace, destination, departureDate, departureTime,
                         arrivalDate, arrivalTime, duration, aircraftModel, maxSeats,
                         bookingOpenDate, economyClassPrice, businessClassPrice, extraBaggagePrice, recurrent);
-                openFlightList.add(flight);
+                flightList.add(flight);
 
             } while (cursor.moveToNext());
             cursor.close();
         }
 
-        FlightAdapter adapter = new FlightAdapter(getContext(), openFlightList);
-        lvOpenFlights.setAdapter(adapter);
+        FlightAdapter adapter = new FlightAdapter(getContext(), flightList);
+        lvFlights.setAdapter(adapter);
 
-        if (openFlightList.isEmpty()) {
+        if (flightList.isEmpty()) {
             Toast.makeText(getContext(), "No flights available for reservation", Toast.LENGTH_SHORT).show();
         }
     }
@@ -110,12 +109,7 @@ public class ViewFlightsFragment extends Fragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Flight Details")
                 .setMessage(flightDetails)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
         builder.show();
     }
 }

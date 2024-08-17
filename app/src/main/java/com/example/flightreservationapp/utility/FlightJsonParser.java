@@ -2,6 +2,8 @@ package com.example.flightreservationapp.utility;
 
 import android.util.Log;
 import com.example.flightreservationapp.model.Flight;
+import com.example.flightreservationapp.model.User;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -111,4 +113,91 @@ public class FlightJsonParser {
             return Flight.RecurrentType.NONE;
         }
     }
+
+
+    public static String userToJson(User user) {
+        StringBuilder json = new StringBuilder();
+        json.append("{");
+        json.append("\"email\":\"").append(user.getEmail()).append("\",");
+        json.append("\"password\":\"").append(user.getPassword()).append("\",");
+        json.append("\"phone\":\"").append(user.getPhone()).append("\",");
+        json.append("\"firstName\":\"").append(user.getFirstName()).append("\",");
+        json.append("\"lastName\":\"").append(user.getLastName()).append("\",");
+        json.append("\"role\":\"").append(user.getRole()).append("\"");
+
+        if (user.getRole().equals("Passenger")) {
+            json.append(",\"passportNumber\":\"").append(user.getPassportNumber()).append("\",");
+            json.append("\"passportIssueDate\":\"").append(user.getPassportIssueDate()).append("\",");
+            json.append("\"passportIssuePlace\":\"").append(user.getPassportIssuePlace()).append("\",");
+            json.append("\"passportExpirationDate\":\"").append(user.getPassportExpirationDate()).append("\",");
+            json.append("\"foodPreference\":\"").append(user.getFoodPreference()).append("\",");
+            json.append("\"dateOfBirth\":\"").append(user.getDateOfBirth()).append("\",");
+            json.append("\"nationality\":\"").append(user.getNationality()).append("\"");
+        }
+
+        json.append("}");
+        return json.toString();
+    }
+
+
+    public static User jsonToUser(String jsonString) {
+        User user = new User();
+
+        // Remove curly braces and split by commas
+        jsonString = jsonString.substring(1, jsonString.length() - 1);
+        String[] pairs = jsonString.split(",");
+
+        for (String pair : pairs) {
+            // Split each key-value pair by colon
+            String[] keyValue = pair.split(":");
+            String key = keyValue[0].replace("\"", "").trim();
+            String value = keyValue[1].replace("\"", "").trim();
+
+            switch (key) {
+                case "email":
+                    user.setEmail(value);
+                    break;
+                case "password":
+                    user.setPassword(value);
+                    break;
+                case "phone":
+                    user.setPhone(value);
+                    break;
+                case "firstName":
+                    user.setFirstName(value);
+                    break;
+                case "lastName":
+                    user.setLastName(value);
+                    break;
+                case "role":
+                    user.setRole(value);
+                    break;
+                case "passportNumber":
+                    user.setPassportNumber(value);
+                    break;
+                case "passportIssueDate":
+                    user.setPassportIssueDate(value);
+                    break;
+                case "passportIssuePlace":
+                    user.setPassportIssuePlace(value);
+                    break;
+                case "passportExpirationDate":
+                    user.setPassportExpirationDate(value);
+                    break;
+                case "foodPreference":
+                    user.setFoodPreference(value);
+                    break;
+                case "dateOfBirth":
+                    user.setDateOfBirth(value);
+                    break;
+                case "nationality":
+                    user.setNationality(value);
+                    break;
+            }
+        }
+
+        return user;
+    }
+
+
 }

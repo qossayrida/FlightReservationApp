@@ -2,37 +2,43 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    android:id="@+id/nav_admin_navigation"
+    app:startDestination="@+id/nav_admin_home">
 
     <fragment
-        android:id="@+id/nav_home"
-        android:name="com.example.flightreservationapp.activity.ui.HomeFragment"
+        android:id="@+id/nav_admin_home"
+        android:name="com.example.flightreservationapp.activity.admin_fragment.AdminHomeFragment"
         android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_admin_home" />
+
+    <fragment
+        android:id="@+id/nav_passenger_home"
+        android:name="com.example.flightreservationapp.activity.passenger_fragment.PassengerHomeFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_passenger_home" />
 
     <fragment
         android:id="@+id/nav_view_flights"
-        android:name="com.example.flightreservationapp.activity.ui.ViewFlightsFragment"
+        android:name="com.example.flightreservationapp.activity.admin_fragment.ViewFlightsFragment"
         android:label="@string/menu_view_flight"
         tools:layout="@layout/fragment_view_flights" />
 
     <fragment
         android:id="@+id/nav_create_flight"
-        android:name="com.example.flightreservationapp.activity.ui.CreateFlightFragment"
+        android:name="com.example.flightreservationapp.activity.admin_fragment.CreateFlightFragment"
         android:label="@string/menu_create_flight"
         tools:layout="@layout/fragment_create_flight" />
 
 
     <fragment
         android:id="@+id/nav_view_flights_not_available"
-        android:name="com.example.flightreservationapp.activity.ui.ViewFlightsNotAvailableFragment"
+        android:name="com.example.flightreservationapp.activity.admin_fragment.ViewFlightsNotAvailableFragment"
         android:label="@string/menu_view_flight_not_available"
         tools:layout="@layout/fragment_view_flights_not_available" />
 
     <fragment
         android:id="@+id/nav_edit_or_remove_flight"
-        android:name="com.example.flightreservationapp.activity.ui.EditOrRemoveFlightFragment"
+        android:name="com.example.flightreservationapp.activity.admin_fragment.EditOrRemoveFlightFragment"
         android:label="@string/menu_edit_or_remove_flight"
         tools:layout="@layout/fragment_edit_or_remove_flight" />
 

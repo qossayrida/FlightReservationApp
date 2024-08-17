@@ -1,4 +1,4 @@
-package com.example.flightreservationapp.activity.ui;
+package com.example.flightreservationapp.activity.admin_fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,19 +8,18 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
-import com.example.flightreservationapp.databinding.FragmentHomeBinding;
+import com.example.flightreservationapp.databinding.FragmentAdminHomeBinding;
 
-public class HomeFragment extends Fragment {
+public class AdminHomeFragment extends Fragment {
 
-    private FragmentHomeBinding binding;
+    private FragmentAdminHomeBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
 
-        binding = FragmentHomeBinding.inflate(inflater, container, false);
+        binding = FragmentAdminHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         final TextView textView = binding.textHome;
