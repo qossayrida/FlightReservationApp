@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,10 +62,10 @@ public class ViewFlightsFragment extends Fragment {
                 String departurePlace = cursor.getString(cursor.getColumnIndexOrThrow("DEPARTURE_PLACE"));
                 String destination = cursor.getString(cursor.getColumnIndexOrThrow("DESTINATION"));
                 String aircraftModel = cursor.getString(cursor.getColumnIndexOrThrow("AIRCRAFT_MODEL"));
-                Date departureDate = new Date(cursor.getLong(cursor.getColumnIndexOrThrow("DEPARTURE_DATE")));
-                Date departureTime = new Date(cursor.getLong(cursor.getColumnIndexOrThrow("DEPARTURE_TIME")));
-                Date arrivalDate = new Date(cursor.getLong(cursor.getColumnIndexOrThrow("ARRIVAL_DATE")));
-                Date arrivalTime = new Date(cursor.getLong(cursor.getColumnIndexOrThrow("ARRIVAL_TIME")));
+                String departureDate = cursor.getString(cursor.getColumnIndexOrThrow("DEPARTURE_DATE"));
+                String departureTime = cursor.getString(cursor.getColumnIndexOrThrow("DEPARTURE_TIME"));
+                String arrivalDate = cursor.getString(cursor.getColumnIndexOrThrow("ARRIVAL_DATE"));
+                String arrivalTime = cursor.getString(cursor.getColumnIndexOrThrow("ARRIVAL_TIME"));
                 int duration = cursor.getInt(cursor.getColumnIndexOrThrow("DURATION"));
                 int maxSeats = cursor.getInt(cursor.getColumnIndexOrThrow("MAX_SEATS"));
                 Date bookingOpenDate = new Date(cursor.getLong(cursor.getColumnIndexOrThrow("BOOKING_OPEN_DATE")));
@@ -72,6 +73,8 @@ public class ViewFlightsFragment extends Fragment {
                 double businessClassPrice = cursor.getDouble(cursor.getColumnIndexOrThrow("BUSINESS_CLASS_PRICE"));
                 double extraBaggagePrice = cursor.getDouble(cursor.getColumnIndexOrThrow("EXTRA_BAGGAGE_PRICE"));
                 Flight.RecurrentType recurrent = Flight.RecurrentType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("RECURRENT")));
+
+                Log.d("=====>>>",cursor.getString(cursor.getColumnIndexOrThrow("DEPARTURE_DATE")));
 
                 Flight flight = new Flight(flightNumber, departurePlace, destination, departureDate, departureTime,
                         arrivalDate, arrivalTime, duration, aircraftModel, maxSeats,

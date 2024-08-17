@@ -32,24 +32,15 @@ public class JsonConverter {
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject flightObject = jsonArray.getJSONObject(i);
 
-                // Parsing date and time
-                Date departureDate = parseDate(flightObject, "departureDate");
-                Date departureTime = parseTime(flightObject, "departureTime");
-                Date arrivalDate = parseDate(flightObject, "arrivalDate");
-                Date arrivalTime = parseTime(flightObject, "arrivalTime");
-
-                // Combine date and time if needed
-                Date fullDepartureDateTime = combineDateAndTime(departureDate, departureTime);
-                Date fullArrivalDateTime = combineDateAndTime(arrivalDate, arrivalTime);
 
                 Flight flight = new Flight(
                         flightObject.optString("flightNumber", "Unknown"),
                         flightObject.optString("departurePlace", "Unknown"),
                         flightObject.optString("destination", "Unknown"),
-                        fullDepartureDateTime,
-                        fullDepartureDateTime,
-                        fullArrivalDateTime,
-                        fullArrivalDateTime,
+                        flightObject.optString("departureDate", "Unknown"),
+                        flightObject.optString("departureTime", "Unknown"),
+                        flightObject.optString("arrivalDate", "Unknown"),
+                        flightObject.optString("arrivalTime", "Unknown"),
                         flightObject.optInt("duration", 0),
                         flightObject.optString("aircraftModel", "Unknown"),
                         flightObject.optInt("maxSeats", 0),
@@ -83,26 +74,6 @@ public class JsonConverter {
             }
         }
         return null;
-    }
-
-    private static Date parseTime(JSONObject jsonObject, String key) {
-        String timeString = jsonObject.optString(key, null);
-        if (timeString != null) {
-            try {
-                return TIME_FORMAT.parse(timeString);
-            } catch (ParseException e) {
-                Log.e(TAG, "Time parsing error for key " + key + ": " + e.getMessage());
-            }
-        }
-        return null;
-    }
-
-    private static Date combineDateAndTime(Date date, Date time) {
-        if (date == null || time == null) {
-            return date;
-        }
-        long combinedTime = date.getTime() + (time.getTime() % (24 * 60 * 60 * 1000)); // Combine date with time of day
-        return new Date(combinedTime);
     }
 
     private static Flight.RecurrentType parseRecurrentType(String recurrentString) {

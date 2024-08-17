@@ -20,6 +20,7 @@
     <string name="nav_header_desc">Navigation header</string>
 
     <string name="menu_home">Home</string>
+    <string name="menu_search_flights">Search Flights</string>
     <string name="menu_create_flight">Create Flight</string>
     <string name="menu_view_flight_not_available">View Flight Not Available</string>
     <string name="menu_view_flight">View Flight</string>
@@ -32,6 +33,12 @@
         <item>Not Recurrent</item>
         <item>Daily</item>
         <item>Weekly</item>
+    </string-array>
+
+
+    <string-array name="sorting_options">
+        <item>Lowest Cost</item>
+        <item>Shortest Duration</item>
     </string-array>
 
 </resources>

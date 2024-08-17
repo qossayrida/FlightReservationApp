@@ -1,0 +1,76 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Departure City -->
+    <EditText
+        android:id="@+id/et_departure_city"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Departure City"/>
+
+    <!-- Arrival City -->
+    <EditText
+        android:id="@+id/et_arrival_city"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Arrival City"/>
+
+    <!-- Departure Date -->
+    <EditText
+        android:id="@+id/et_departure_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Departure Date"/>
+
+    <!-- One Way / Round Trip -->
+    <RadioGroup
+        android:id="@+id/rg_trip_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <RadioButton
+            android:id="@+id/rb_one_way"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="One Way"/>
+        <RadioButton
+            android:id="@+id/rb_round_trip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Round Trip"/>
+    </RadioGroup>
+
+    <!-- Return Date -->
+    <EditText
+        android:id="@+id/et_return_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Return Date"
+        android:visibility="gone"/>
+
+    <!-- Sorting -->
+    <Spinner
+        android:id="@+id/sp_sorting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/sorting_options"/>
+
+    <!-- Search Button -->
+    <Button
+        android:id="@+id/btn_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Search"/>
+
+
+
+    <ListView
+        android:id="@+id/lv_flight_results"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible"/>
+</LinearLayout>

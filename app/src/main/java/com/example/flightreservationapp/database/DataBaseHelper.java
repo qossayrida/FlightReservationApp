@@ -20,7 +20,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE USERS(EMAIL TEXT PRIMARY KEY, PASSWORD TEXT, PHONE TEXT, FIRST_NAME TEXT, LAST_NAME TEXT, ROLE TEXT, PASSPORT_NUMBER TEXT, PASSPORT_ISSUE_DATE TEXT, PASSPORT_ISSUE_PLACE TEXT, PASSPORT_EXPIRATION_DATE TEXT, FOOD_PREFERENCE TEXT, DATE_OF_BIRTH TEXT, NATIONALITY TEXT)");
 
-        db.execSQL("CREATE TABLE FLIGHTS(FLIGHT_NUMBER TEXT PRIMARY KEY, DEPARTURE_PLACE TEXT, DESTINATION TEXT, DEPARTURE_DATE INTEGER, DEPARTURE_TIME INTEGER, ARRIVAL_DATE INTEGER, ARRIVAL_TIME INTEGER, DURATION INTEGER, AIRCRAFT_MODEL TEXT, MAX_SEATS INTEGER, BOOKING_OPEN_DATE INTEGER, ECONOMY_CLASS_PRICE REAL, BUSINESS_CLASS_PRICE REAL, EXTRA_BAGGAGE_PRICE REAL, RECURRENT TEXT, CURRENT_RESERVATIONS INTEGER, MISSED_FLIGHTS INTEGER)");
+        db.execSQL("CREATE TABLE FLIGHTS(FLIGHT_NUMBER TEXT PRIMARY KEY, DEPARTURE_PLACE TEXT, DESTINATION TEXT, DEPARTURE_DATE DATE , DEPARTURE_TIME TEXT, ARRIVAL_DATE DATE, ARRIVAL_TIME TEXT, DURATION INTEGER, AIRCRAFT_MODEL TEXT, MAX_SEATS INTEGER, BOOKING_OPEN_DATE INTEGER, ECONOMY_CLASS_PRICE REAL, BUSINESS_CLASS_PRICE REAL, EXTRA_BAGGAGE_PRICE REAL, RECURRENT TEXT, CURRENT_RESERVATIONS INTEGER, MISSED_FLIGHTS INTEGER)");
     }
 
 
@@ -72,5 +72,27 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         long currentTime = System.currentTimeMillis(); // Get the current time in milliseconds
         return db.rawQuery("SELECT * FROM FLIGHTS WHERE BOOKING_OPEN_DATE > ?", new String[]{String.valueOf(currentTime)});
     }
+
+
+    public Cursor searchFlights(String departureCity, String arrivalCity, String departureDate, String returnDate, String sortingOption) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM FLIGHTS WHERE DEPARTURE_PLACE = ? AND DESTINATION = ? AND DEPARTURE_DATE = ?";
+
+        // Add return date logic for round-trip
+        if (!returnDate.isEmpty()) {
+            query += " AND ARRIVAL_DATE = ?";
+        }
+
+        // Sorting by lowest cost or shortest duration
+        if (sortingOption.equals("Lowest Cost")) {
+            query += " ORDER BY ECONOMY_CLASS_PRICE ASC";
+        } else {
+            query += " ORDER BY DURATION ASC";
+        }
+
+        return db.rawQuery(query, returnDate.isEmpty() ? new String[]{departureCity, arrivalCity, departureDate} :
+                new String[]{departureCity, arrivalCity, departureDate, returnDate});
+    }
+
 
 }

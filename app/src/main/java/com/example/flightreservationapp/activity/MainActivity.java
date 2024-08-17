@@ -174,10 +174,10 @@ public class MainActivity extends AppCompatActivity {
                 values.put("FLIGHT_NUMBER", flight.getFlightNumber());
                 values.put("DEPARTURE_PLACE", flight.getDeparturePlace());
                 values.put("DESTINATION", flight.getDestination());
-                values.put("DEPARTURE_DATE", flight.getDepartureDate().getTime());
-                values.put("DEPARTURE_TIME", flight.getDepartureTime().getTime());
-                values.put("ARRIVAL_DATE", flight.getArrivalDate().getTime());
-                values.put("ARRIVAL_TIME", flight.getArrivalTime().getTime());
+                values.put("DEPARTURE_DATE", flight.getDepartureDate());
+                values.put("DEPARTURE_TIME", flight.getDepartureTime());
+                values.put("ARRIVAL_DATE", flight.getArrivalDate());
+                values.put("ARRIVAL_TIME", flight.getArrivalTime());
                 values.put("DURATION", flight.getDuration());
                 values.put("AIRCRAFT_MODEL", flight.getAircraftModel());
                 values.put("MAX_SEATS", flight.getMaxSeats());

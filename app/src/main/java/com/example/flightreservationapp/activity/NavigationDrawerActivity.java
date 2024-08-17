@@ -3,6 +3,9 @@ package com.example.flightreservationapp.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.flightreservationapp.model.*;
 import com.example.flightreservationapp.utility.*;
@@ -45,24 +48,32 @@ public class NavigationDrawerActivity extends AppCompatActivity {
             savedUser = JsonConverter.jsonToUser(savedUserJson);
         }
 
+        if (savedUser != null) {
+            View headerView = navigationView.getHeaderView(0);
+
+            TextView headerTitle = headerView.findViewById(R.id.textViewForName);
+            TextView headerSubtitle = headerView.findViewById(R.id.textViewForEmail);
+
+            headerTitle.setText(savedUser.getFirstName() + " " + savedUser.getLastName());
+            headerSubtitle.setText(savedUser.getEmail());
+        }
+
         if (savedUser != null && savedUser.getRole().equals("Admin")) {
-            // Load Admin navigation graph
             navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_navigation_drawer);
             navController.setGraph(R.navigation.nav_admin_navigation);
             navigationView.inflateMenu(R.menu.activity_admin_drawer);
 
             mAppBarConfiguration = new AppBarConfiguration.Builder(
-                    R.id.nav_admin_home, R.id.nav_create_flight, R.id.nav_edit_or_remove_flight, R.id.nav_view_flights,R.id.nav_view_flights_not_available)
+                    R.id.nav_admin_home, R.id.nav_create_flight, R.id.nav_edit_or_remove_flight, R.id.nav_view_flights, R.id.nav_view_flights_not_available)
                     .setOpenableLayout(drawer)
                     .build();
         } else if (savedUser != null && savedUser.getRole().equals("Passenger")) {
-            // Load Passenger navigation graph
             navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_navigation_drawer);
             navController.setGraph(R.navigation.nav_passenger_navigation);
             navigationView.inflateMenu(R.menu.activity_passenger_drawer);
 
             mAppBarConfiguration = new AppBarConfiguration.Builder(
-                    R.id.nav_passenger_home)
+                    R.id.nav_passenger_home,R.id.nav_search_flights)
                     .setOpenableLayout(drawer)
                     .build();
         }
@@ -73,18 +84,17 @@ public class NavigationDrawerActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
 
-            // Handle the logout action
             if (id == R.id.nav_logout) {
                 logout();
             } else {
                 NavigationUI.onNavDestinationSelected(item, navController);
             }
 
-            // Make the NavigationView (drawer) invisible after an item is selected
             drawer.closeDrawer(GravityCompat.START);
             return true;
         });
     }
+
 
     private void logout() {
         // Handle the logout logic here (e.g., clear user session, etc.)
