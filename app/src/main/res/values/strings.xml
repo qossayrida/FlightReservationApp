@@ -21,6 +21,7 @@
 
     <string name="menu_home">Home</string>
     <string name="menu_search_flights">Search Flights</string>
+    <string name="menu_view_previous_reservations">View Previous Reservations</string>
     <string name="menu_create_flight">Create Flight</string>
     <string name="menu_view_all_reservations">View Reservations</string>
     <string name="menu_view_flight_not_available">View Flight Not Available</string>

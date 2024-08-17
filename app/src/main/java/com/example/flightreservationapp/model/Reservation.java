@@ -8,17 +8,15 @@ public class Reservation {
     private String flightNumber;
     private String flightClass;
     private int extraBags;
-    private String foodPreference;
     private double totalCost;
 
     // Constructor
-    public Reservation(String reservationId, String passportNumber, String flightNumber, String flightClass, int extraBags, String foodPreference, double totalCost) {
+    public Reservation(String reservationId, String passportNumber, String flightNumber, String flightClass, int extraBags, double totalCost) {
         this.reservationId = reservationId;
         this.passportNumber = passportNumber;
         this.flightNumber = flightNumber;
         this.flightClass = flightClass;
         this.extraBags = extraBags;
-        this.foodPreference = foodPreference;
         this.totalCost = totalCost;
     }
 
@@ -61,14 +59,6 @@ public class Reservation {
 
     public void setExtraBags(int extraBags) {
         this.extraBags = extraBags;
-    }
-
-    public String getFoodPreference() {
-        return foodPreference;
-    }
-
-    public void setFoodPreference(String foodPreference) {
-        this.foodPreference = foodPreference;
     }
 
     public double getTotalCost() {

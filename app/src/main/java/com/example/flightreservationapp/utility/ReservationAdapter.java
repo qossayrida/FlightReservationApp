@@ -29,14 +29,12 @@ public class ReservationAdapter extends ArrayAdapter<Reservation> {
         TextView tvPassportNumber = convertView.findViewById(R.id.tv_passport_number);
         TextView tvFlightClass = convertView.findViewById(R.id.tv_flight_class);
         TextView tvExtraBags = convertView.findViewById(R.id.tv_extra_bags);
-        TextView tvFoodPreference = convertView.findViewById(R.id.tv_food_preference);
         TextView tvTotalCost = convertView.findViewById(R.id.tv_total_cost);
 
         tvReservationId.setText("Reservation ID: " + reservation.getReservationId());
         tvPassportNumber.setText("Passport Number: " + reservation.getPassportNumber());
         tvFlightClass.setText("Class: " + reservation.getFlightClass());
         tvExtraBags.setText("Extra Bags: " + reservation.getExtraBags());
-        tvFoodPreference.setText("Food Preference: " + reservation.getFoodPreference());
         tvTotalCost.setText("Total Cost: $" + reservation.getTotalCost());
 
         return convertView;

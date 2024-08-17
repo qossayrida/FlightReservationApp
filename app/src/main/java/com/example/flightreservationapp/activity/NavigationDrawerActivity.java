@@ -73,7 +73,7 @@ public class NavigationDrawerActivity extends AppCompatActivity {
             navigationView.inflateMenu(R.menu.activity_passenger_drawer);
 
             mAppBarConfiguration = new AppBarConfiguration.Builder(
-                    R.id.nav_passenger_home,R.id.nav_search_flights)
+                    R.id.nav_passenger_home,R.id.nav_search_flights,R.id.nav_view_previous_reservations)
                     .setOpenableLayout(drawer)
                     .build();
         }

@@ -16,6 +16,11 @@
             android:title="@string/menu_search_flights" />
 
         <item
+            android:id="@+id/nav_view_previous_reservations"
+            android:icon="@drawable/ic_previous"
+            android:title="@string/menu_view_previous_reservations" />
+
+        <item
             android:id="@+id/nav_logout"
             android:title="Logout"
             android:icon="@drawable/ic_logout" />

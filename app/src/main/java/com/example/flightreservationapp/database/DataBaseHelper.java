@@ -65,7 +65,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 "FLIGHT_NUMBER TEXT, " +
                 "FLIGHT_CLASS TEXT, " +
                 "EXTRA_BAGS INTEGER, " +
-                "FOOD_PREFERENCE TEXT, " +
                 "TOTAL_COST REAL, " +
                 "UNIQUE(PASSPORT_NUMBER, FLIGHT_NUMBER), " + // Unique constraint on passportNumber and flightNumber
                 "FOREIGN KEY(PASSPORT_NUMBER) REFERENCES USERS(PASSPORT_NUMBER), " +
@@ -153,5 +152,22 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery("SELECT * FROM RESERVATIONS WHERE FLIGHT_NUMBER = ?", new String[]{flightNumber});
     }
+
+    public Cursor getPastReservationsForUser(String passportNumber) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        // Get current date in the format yyyy-MM-dd
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String currentDate = dateFormat.format(new Date());
+
+        // Query to find all reservations for the given passport number with departure date less than current date
+        String query = "SELECT * FROM RESERVATIONS " +
+                "JOIN FLIGHTS ON RESERVATIONS.FLIGHT_NUMBER = FLIGHTS.FLIGHT_NUMBER " +
+                "WHERE RESERVATIONS.PASSPORT_NUMBER = ? " +
+                "AND FLIGHTS.DEPARTURE_DATE < ?";
+
+        return db.rawQuery(query, new String[]{passportNumber, currentDate});
+    }
+
 
 }
