@@ -7,7 +7,7 @@ import android.util.Log;
 
 import com.example.flightreservationapp.activity.MainActivity;
 import com.example.flightreservationapp.model.Flight;
-import com.example.flightreservationapp.utility.FlightJsonParser;
+import com.example.flightreservationapp.utility.JsonConverter;
 
 import java.util.List;
 
@@ -38,7 +38,7 @@ public class ConnectionAsyncTask extends AsyncTask<String, String, String> {
             ((MainActivity) activity).redirectToFailedLogin();
         } else {
             Log.d("TAG", s);
-            List<Flight> flights = FlightJsonParser.getObjectFromJson(s);
+            List<Flight> flights = JsonConverter.getObjectFromJson(s);
             ((MainActivity) activity).addToDataBase(flights);
             ((MainActivity) activity).enableButtons();
         }

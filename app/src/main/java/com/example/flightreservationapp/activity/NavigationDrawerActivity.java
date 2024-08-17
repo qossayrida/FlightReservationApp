@@ -3,8 +3,6 @@ package com.example.flightreservationapp.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.view.Menu;
 
 import com.example.flightreservationapp.model.*;
 import com.example.flightreservationapp.utility.*;
@@ -44,7 +42,7 @@ public class NavigationDrawerActivity extends AppCompatActivity {
         String savedUserJson = sharedPrefManager.readString("userJson", null);
         User savedUser = null;
         if (savedUserJson != null) {
-            savedUser = FlightJsonParser.jsonToUser(savedUserJson);
+            savedUser = JsonConverter.jsonToUser(savedUserJson);
         }
 
         if (savedUser != null && savedUser.getRole().equals("Admin")) {

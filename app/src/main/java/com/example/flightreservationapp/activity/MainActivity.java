@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
 
-            String userJson = FlightJsonParser.userToJson(user);
+            String userJson = JsonConverter.userToJson(user);
             sharedPrefManager.writeString("userJson", userJson);
 
             Intent intent = new Intent(this, NavigationDrawerActivity.class);

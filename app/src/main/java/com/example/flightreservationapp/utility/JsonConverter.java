@@ -14,9 +14,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class FlightJsonParser {
+public class JsonConverter {
 
-    private static final String TAG = "FlightJsonParser";
+    private static final String TAG = "JsonConverter";
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
     private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm", Locale.getDefault());
 
