@@ -15,7 +15,7 @@ public class Flight{
     private int currentReservations;
     private int maxSeats;
     private int missedFlights;
-    private Date bookingOpenDate;
+    private String bookingOpenDate;
     private double economyClassPrice;
     private double businessClassPrice;
     private double extraBaggagePrice;
@@ -30,7 +30,7 @@ public class Flight{
     // Constructor
     public Flight(String flightNumber, String departurePlace, String destination, String departureDate,
                   String departureTime, String arrivalDate, String arrivalTime, int duration, String aircraftModel,
-                  int maxSeats, Date bookingOpenDate, double economyClassPrice, double businessClassPrice,
+                  int maxSeats, String bookingOpenDate, double economyClassPrice, double businessClassPrice,
                   double extraBaggagePrice, RecurrentType recurrent) {
         this.flightNumber = flightNumber;
         this.departurePlace = departurePlace;
@@ -155,11 +155,11 @@ public class Flight{
         this.missedFlights = missedFlights;
     }
 
-    public Date getBookingOpenDate() {
+    public String getBookingOpenDate() {
         return bookingOpenDate;
     }
 
-    public void setBookingOpenDate(Date bookingOpenDate) {
+    public void setBookingOpenDate(String bookingOpenDate) {
         this.bookingOpenDate = bookingOpenDate;
     }
 

@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
     private void loadFlightData() {
         try {
             ConnectionAsyncTask connectionAsyncTask = new ConnectionAsyncTask(MainActivity.this);
-            connectionAsyncTask.execute("https://mocki.io/v1/e29b3bbe-9af1-4758-ba71-5e13ae3dc8b4");
+            connectionAsyncTask.execute("https://mocki.io/v1/9be924c9-0dcc-47ce-87a5-c23d3d4db5a3");
         } catch (Exception e) {
             redirectToFailedLogin();
         }
@@ -181,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
                 values.put("DURATION", flight.getDuration());
                 values.put("AIRCRAFT_MODEL", flight.getAircraftModel());
                 values.put("MAX_SEATS", flight.getMaxSeats());
-                values.put("BOOKING_OPEN_DATE", flight.getBookingOpenDate().getTime());
+                values.put("BOOKING_OPEN_DATE", flight.getBookingOpenDate());
                 values.put("ECONOMY_CLASS_PRICE", flight.getEconomyClassPrice());
                 values.put("BUSINESS_CLASS_PRICE", flight.getBusinessClassPrice());
                 values.put("EXTRA_BAGGAGE_PRICE", flight.getExtraBaggagePrice());

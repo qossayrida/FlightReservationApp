@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/et_flight_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Flight Number"
+        android:inputType="text" />
+
+    <Button
+        android:id="@+id/btn_search_reservations"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Search Reservations" />
+
+    <ListView
+        android:id="@+id/lv_reservations"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

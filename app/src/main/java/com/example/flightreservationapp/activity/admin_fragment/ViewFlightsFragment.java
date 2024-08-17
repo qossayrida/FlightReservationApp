@@ -68,7 +68,7 @@ public class ViewFlightsFragment extends Fragment {
                 String arrivalTime = cursor.getString(cursor.getColumnIndexOrThrow("ARRIVAL_TIME"));
                 int duration = cursor.getInt(cursor.getColumnIndexOrThrow("DURATION"));
                 int maxSeats = cursor.getInt(cursor.getColumnIndexOrThrow("MAX_SEATS"));
-                Date bookingOpenDate = new Date(cursor.getLong(cursor.getColumnIndexOrThrow("BOOKING_OPEN_DATE")));
+                String bookingOpenDate = cursor.getString(cursor.getColumnIndexOrThrow("BOOKING_OPEN_DATE"));
                 double economyClassPrice = cursor.getDouble(cursor.getColumnIndexOrThrow("ECONOMY_CLASS_PRICE"));
                 double businessClassPrice = cursor.getDouble(cursor.getColumnIndexOrThrow("BUSINESS_CLASS_PRICE"));
                 double extraBaggagePrice = cursor.getDouble(cursor.getColumnIndexOrThrow("EXTRA_BAGGAGE_PRICE"));

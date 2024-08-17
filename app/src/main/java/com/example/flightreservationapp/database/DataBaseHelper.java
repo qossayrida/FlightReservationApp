@@ -7,6 +7,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import com.example.flightreservationapp.model.*;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class DataBaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "flight_reservation.db";
@@ -46,7 +50,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 "DURATION INTEGER, " +
                 "AIRCRAFT_MODEL TEXT, " +
                 "MAX_SEATS INTEGER, " +
-                "BOOKING_OPEN_DATE INTEGER, " +
+                "BOOKING_OPEN_DATE DATE, " +
                 "ECONOMY_CLASS_PRICE REAL, " +
                 "BUSINESS_CLASS_PRICE REAL, " +
                 "EXTRA_BAGGAGE_PRICE REAL, " +
@@ -115,9 +119,14 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     public Cursor getFlightsNotOpenForReservation() {
         SQLiteDatabase db = getReadableDatabase();
-        long currentTime = System.currentTimeMillis(); // Get the current time in milliseconds
-        return db.rawQuery("SELECT * FROM FLIGHTS WHERE BOOKING_OPEN_DATE > ?", new String[]{String.valueOf(currentTime)});
+
+        // Get current date in the format yyyy-MM-dd
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String currentDate = dateFormat.format(new Date());
+
+        return db.rawQuery("SELECT * FROM FLIGHTS WHERE BOOKING_OPEN_DATE > ?", new String[]{currentDate});
     }
+
 
 
     public Cursor searchFlights(String departureCity, String arrivalCity, String departureDate, String returnDate, String sortingOption) {
@@ -140,5 +149,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 new String[]{departureCity, arrivalCity, departureDate, returnDate});
     }
 
+    public Cursor getReservationsForFlight(String flightNumber) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT * FROM RESERVATIONS WHERE FLIGHT_NUMBER = ?", new String[]{flightNumber});
+    }
 
 }

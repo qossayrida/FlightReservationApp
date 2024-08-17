@@ -44,7 +44,7 @@ public class JsonConverter {
                         flightObject.optInt("duration", 0),
                         flightObject.optString("aircraftModel", "Unknown"),
                         flightObject.optInt("maxSeats", 0),
-                        parseDate(flightObject, "bookingOpenDate"),
+                        flightObject.optString("bookingOpenDate", "Unknown"),
                         flightObject.optDouble("economyClassPrice", 0.0),
                         flightObject.optDouble("businessClassPrice", 0.0),
                         flightObject.optDouble("extraBaggagePrice", 0.0),

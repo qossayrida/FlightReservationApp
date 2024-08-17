@@ -42,4 +42,10 @@
         android:label="@string/menu_edit_or_remove_flight"
         tools:layout="@layout/fragment_edit_or_remove_flight" />
 
+    <fragment
+        android:id="@+id/nav_view_all_reservations"
+        android:name="com.example.flightreservationapp.activity.admin_fragment.ViewAllReservationsFragment"
+        android:label="@string/menu_view_all_reservations"
+        tools:layout="@layout/fragment_view_all_reservations" />
+
 </navigation>
