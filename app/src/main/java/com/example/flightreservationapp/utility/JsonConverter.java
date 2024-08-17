@@ -1,24 +1,14 @@
 package com.example.flightreservationapp.utility;
 
 import android.util.Log;
-import com.example.flightreservationapp.model.Flight;
-import com.example.flightreservationapp.model.User;
+import com.example.flightreservationapp.model.*;
+import org.json.*;
+import java.util.*;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
 
 public class JsonConverter {
 
     private static final String TAG = "JsonConverter";
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-    private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm", Locale.getDefault());
 
     public static List<Flight> getObjectFromJson(String json) {
         List<Flight> flights = new ArrayList<>();
@@ -62,18 +52,6 @@ public class JsonConverter {
 
         Log.d(TAG, "Parsed flights: " + flights.toString());
         return flights;
-    }
-
-    private static Date parseDate(JSONObject jsonObject, String key) {
-        String dateString = jsonObject.optString(key, null);
-        if (dateString != null) {
-            try {
-                return DATE_FORMAT.parse(dateString);
-            } catch (ParseException e) {
-                Log.e(TAG, "Date parsing error for key " + key + ": " + e.getMessage());
-            }
-        }
-        return null;
     }
 
     private static Flight.RecurrentType parseRecurrentType(String recurrentString) {
@@ -166,9 +144,6 @@ public class JsonConverter {
                     break;
             }
         }
-
         return user;
     }
-
-
 }
