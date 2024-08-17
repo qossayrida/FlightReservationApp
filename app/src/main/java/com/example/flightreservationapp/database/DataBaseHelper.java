@@ -18,10 +18,56 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE USERS(EMAIL TEXT PRIMARY KEY, PASSWORD TEXT, PHONE TEXT, FIRST_NAME TEXT, LAST_NAME TEXT, ROLE TEXT, PASSPORT_NUMBER TEXT, PASSPORT_ISSUE_DATE TEXT, PASSPORT_ISSUE_PLACE TEXT, PASSPORT_EXPIRATION_DATE TEXT, FOOD_PREFERENCE TEXT, DATE_OF_BIRTH TEXT, NATIONALITY TEXT)");
+        // Create USERS table
+        db.execSQL("CREATE TABLE USERS(" +
+                "EMAIL TEXT PRIMARY KEY, " +
+                "PASSWORD TEXT, " +
+                "PHONE TEXT, " +
+                "FIRST_NAME TEXT, " +
+                "LAST_NAME TEXT, " +
+                "ROLE TEXT, " +
+                "PASSPORT_NUMBER TEXT, " +
+                "PASSPORT_ISSUE_DATE TEXT, " +
+                "PASSPORT_ISSUE_PLACE TEXT, " +
+                "PASSPORT_EXPIRATION_DATE TEXT, " +
+                "FOOD_PREFERENCE TEXT, " +
+                "DATE_OF_BIRTH TEXT, " +
+                "NATIONALITY TEXT)");
 
-        db.execSQL("CREATE TABLE FLIGHTS(FLIGHT_NUMBER TEXT PRIMARY KEY, DEPARTURE_PLACE TEXT, DESTINATION TEXT, DEPARTURE_DATE DATE , DEPARTURE_TIME TEXT, ARRIVAL_DATE DATE, ARRIVAL_TIME TEXT, DURATION INTEGER, AIRCRAFT_MODEL TEXT, MAX_SEATS INTEGER, BOOKING_OPEN_DATE INTEGER, ECONOMY_CLASS_PRICE REAL, BUSINESS_CLASS_PRICE REAL, EXTRA_BAGGAGE_PRICE REAL, RECURRENT TEXT, CURRENT_RESERVATIONS INTEGER, MISSED_FLIGHTS INTEGER)");
+        // Create FLIGHTS table
+        db.execSQL("CREATE TABLE FLIGHTS(" +
+                "FLIGHT_NUMBER TEXT PRIMARY KEY, " +
+                "DEPARTURE_PLACE TEXT, " +
+                "DESTINATION TEXT, " +
+                "DEPARTURE_DATE DATE, " +
+                "DEPARTURE_TIME TEXT, " +
+                "ARRIVAL_DATE DATE, " +
+                "ARRIVAL_TIME TEXT, " +
+                "DURATION INTEGER, " +
+                "AIRCRAFT_MODEL TEXT, " +
+                "MAX_SEATS INTEGER, " +
+                "BOOKING_OPEN_DATE INTEGER, " +
+                "ECONOMY_CLASS_PRICE REAL, " +
+                "BUSINESS_CLASS_PRICE REAL, " +
+                "EXTRA_BAGGAGE_PRICE REAL, " +
+                "RECURRENT TEXT, " +
+                "CURRENT_RESERVATIONS INTEGER, " +
+                "MISSED_FLIGHTS INTEGER)");
+
+        // Create RESERVATIONS table
+        db.execSQL("CREATE TABLE RESERVATIONS(" +
+                "RESERVATION_ID TEXT PRIMARY KEY, " +
+                "PASSPORT_NUMBER TEXT, " +
+                "FLIGHT_NUMBER TEXT, " +
+                "FLIGHT_CLASS TEXT, " +
+                "EXTRA_BAGS INTEGER, " +
+                "FOOD_PREFERENCE TEXT, " +
+                "TOTAL_COST REAL, " +
+                "UNIQUE(PASSPORT_NUMBER, FLIGHT_NUMBER), " + // Unique constraint on passportNumber and flightNumber
+                "FOREIGN KEY(PASSPORT_NUMBER) REFERENCES USERS(PASSPORT_NUMBER), " +
+                "FOREIGN KEY(FLIGHT_NUMBER) REFERENCES FLIGHTS(FLIGHT_NUMBER))");
     }
+
 
 
     @Override
