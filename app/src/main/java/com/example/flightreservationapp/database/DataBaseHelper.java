@@ -277,6 +277,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         values.put("EXTRA_BAGS", extraBags);
         values.put("TOTAL_COST", totalCost);
         db.insert("RESERVATIONS", null, values);
+
+        // increment CURRENT_RESERVATIONS
     }
 
 }

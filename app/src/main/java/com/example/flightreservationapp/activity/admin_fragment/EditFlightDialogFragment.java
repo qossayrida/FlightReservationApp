@@ -23,10 +23,10 @@ import java.util.Date;
 
 public class EditFlightDialogFragment extends DialogFragment {
 
-    private EditText etFlightNumber, etDeparturePlace, etDestination, etDepartureDate,
+    private EditText etFlightNumber, etDepartureDate,
             etDepartureTime, etArrivalDate, etArrivalTime, etDuration, etAircraftModel, etMaxSeats,
             etBookingOpenDate, etPriceEconomy, etPriceBusiness, etPriceExtraBaggage;
-    private Spinner spinnerRecurrent;
+    private Spinner spinnerRecurrent,spDeparturePlace, spDestination;
     private Button btnUpdateFlight;
     private Flight flight;
     private OnFlightUpdatedListener flightUpdatedListener;
@@ -63,8 +63,8 @@ public class EditFlightDialogFragment extends DialogFragment {
 
         // Initialize views
         etFlightNumber = view.findViewById(R.id.et_flight_number);
-        etDeparturePlace = view.findViewById(R.id.sp_departure_place);
-        etDestination = view.findViewById(R.id.sp_destination);
+        spDeparturePlace = view.findViewById(R.id.sp_departure_place);
+        spDestination = view.findViewById(R.id.sp_destination);
         etDepartureDate = view.findViewById(R.id.et_departure_date);
         etDepartureTime = view.findViewById(R.id.et_departure_time);
         etArrivalDate = view.findViewById(R.id.et_arrival_date);
@@ -84,8 +84,8 @@ public class EditFlightDialogFragment extends DialogFragment {
         // Populate fields with the current flight data
         if (flight != null) {
             etFlightNumber.setText(flight.getFlightNumber());
-            etDeparturePlace.setText(flight.getDeparturePlace());
-            etDestination.setText(flight.getDestination());
+            setSpinnerSelection(spDeparturePlace, flight.getDeparturePlace());
+            setSpinnerSelection(spDestination, flight.getDestination());
             etDepartureDate.setText(flight.getDepartureDate());
             etDepartureTime.setText(flight.getDepartureTime());
             etArrivalDate.setText(flight.getArrivalDate());
@@ -116,8 +116,8 @@ public class EditFlightDialogFragment extends DialogFragment {
 
     private void updateFlight() {
         String flightNumber = etFlightNumber.getText().toString().trim();
-        String departurePlace = etDeparturePlace.getText().toString().trim();
-        String destination = etDestination.getText().toString().trim();
+        String departurePlace = spDeparturePlace.getSelectedItem().toString().trim();
+        String destination = spDestination.getSelectedItem().toString().trim();
         String departureDate = etDepartureDate.getText().toString().trim();
         String departureTime = etDepartureTime.getText().toString().trim();
         String arrivalDate = etArrivalDate.getText().toString().trim();
@@ -239,4 +239,13 @@ public class EditFlightDialogFragment extends DialogFragment {
             return -1; // Return -1 to indicate an error in calculation
         }
     }
+
+    private void setSpinnerSelection(Spinner spinner, String value) {
+        ArrayAdapter<CharSequence> adapter = (ArrayAdapter<CharSequence>) spinner.getAdapter();
+        if (adapter != null) {
+            int position = adapter.getPosition(value);
+            spinner.setSelection(position);
+        }
+    }
+
 }
