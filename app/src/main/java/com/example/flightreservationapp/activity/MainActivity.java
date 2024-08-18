@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
     private void loadFlightData() {
         try {
             ConnectionAsyncTask connectionAsyncTask = new ConnectionAsyncTask(MainActivity.this);
-            connectionAsyncTask.execute("https://mocki.io/v1/9be924c9-0dcc-47ce-87a5-c23d3d4db5a3");
+            connectionAsyncTask.execute("https://mocki.io/v1/6735948d-8283-4edc-95f8-1f857085d60c");
         } catch (Exception e) {
             redirectToFailedLogin();
         }

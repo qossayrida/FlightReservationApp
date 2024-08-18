@@ -1,5 +1,7 @@
 package com.example.flightreservationapp.activity.admin_fragment;
 
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -9,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.flightreservationapp.R;
+import com.example.flightreservationapp.database.DataBaseHelper;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -52,11 +55,92 @@ public class CreateFlightFragment extends Fragment {
         setUpDateAndTimePickers();
 
         btnSubmit.setOnClickListener(v -> {
-            // Handle the logic to create a new flight
-            // Collect data from the input fields and store them in the database
+            // Collect the data from input fields
+            String flightNumber = etFlightNumber.getText().toString().trim();
+            String departurePlace = etDeparturePlace.getText().toString().trim();
+            String destination = etDestination.getText().toString().trim();
+            String departureDate = etDepartureDate.getText().toString().trim();
+            String departureTime = etDepartureTime.getText().toString().trim();
+            String arrivalDate = etArrivalDate.getText().toString().trim();
+            String arrivalTime = etArrivalTime.getText().toString().trim();
+            String durationStr = etDuration.getText().toString().trim();
+            String aircraftModel = etAircraftModel.getText().toString().trim();
+            String maxSeatsStr = etMaxSeats.getText().toString().trim();
+            String bookingOpenDate = etBookingOpenDate.getText().toString().trim();
+            String priceEconomyStr = etPriceEconomy.getText().toString().trim();
+            String priceBusinessStr = etPriceBusiness.getText().toString().trim();
+            String priceExtraBaggageStr = etPriceExtraBaggage.getText().toString().trim();
+            String recurrent = spinnerRecurrent.getSelectedItem().toString();
+
+            // Validate the input data
+            if (flightNumber.isEmpty() || departurePlace.isEmpty() || destination.isEmpty() || departureDate.isEmpty() ||
+                    departureTime.isEmpty() || arrivalDate.isEmpty() || arrivalTime.isEmpty() || durationStr.isEmpty() ||
+                    aircraftModel.isEmpty() || maxSeatsStr.isEmpty() || bookingOpenDate.isEmpty() || priceEconomyStr.isEmpty() ||
+                    priceBusinessStr.isEmpty() || priceExtraBaggageStr.isEmpty()) {
+                Toast.makeText(getContext(), "Please fill all the fields", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            int duration = Integer.parseInt(durationStr);
+            int maxSeats = Integer.parseInt(maxSeatsStr);
+            double priceEconomy = Double.parseDouble(priceEconomyStr);
+            double priceBusiness = Double.parseDouble(priceBusinessStr);
+            double priceExtraBaggage = Double.parseDouble(priceExtraBaggageStr);
+
+            // Insert data into the database
+            DataBaseHelper dbHelper = new DataBaseHelper(getContext());
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put("FLIGHT_NUMBER", flightNumber);
+            values.put("DEPARTURE_PLACE", departurePlace);
+            values.put("DESTINATION", destination);
+            values.put("DEPARTURE_DATE", departureDate);
+            values.put("DEPARTURE_TIME", departureTime);
+            values.put("ARRIVAL_DATE", arrivalDate);
+            values.put("ARRIVAL_TIME", arrivalTime);
+            values.put("DURATION", duration);
+            values.put("AIRCRAFT_MODEL", aircraftModel);
+            values.put("MAX_SEATS", maxSeats);
+            values.put("BOOKING_OPEN_DATE", bookingOpenDate);
+            values.put("ECONOMY_CLASS_PRICE", priceEconomy);
+            values.put("BUSINESS_CLASS_PRICE", priceBusiness);
+            values.put("EXTRA_BAGGAGE_PRICE", priceExtraBaggage);
+            values.put("RECURRENT", recurrent);
+            values.put("CURRENT_RESERVATIONS", 0); // Initial reservations set to 0
+            values.put("MISSED_FLIGHTS", 0); // Initial missed flights set to 0
+
+            long result = db.insert("FLIGHTS", null, values);
+
+            if (result != -1) {
+                Toast.makeText(getContext(), "Flight created successfully", Toast.LENGTH_SHORT).show();
+                // Optionally, clear the fields after successful creation
+                clearFields();
+            } else {
+                Toast.makeText(getContext(), "Failed to create flight", Toast.LENGTH_SHORT).show();
+            }
+
+            db.close(); // Close the database after operation
         });
 
         return view;
+    }
+
+    private void clearFields() {
+        etFlightNumber.setText("");
+        etDeparturePlace.setText("");
+        etDestination.setText("");
+        etDepartureDate.setText("");
+        etDepartureTime.setText("");
+        etArrivalDate.setText("");
+        etArrivalTime.setText("");
+        etDuration.setText("");
+        etAircraftModel.setText("");
+        etMaxSeats.setText("");
+        etBookingOpenDate.setText("");
+        etPriceEconomy.setText("");
+        etPriceBusiness.setText("");
+        etPriceExtraBaggage.setText("");
+        spinnerRecurrent.setSelection(0);
     }
 
     private void setUpDateAndTimePickers() {
@@ -100,4 +184,6 @@ public class CreateFlightFragment extends Fragment {
             timePickerDialog.show();
         });
     }
+
+
 }

@@ -9,139 +9,314 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <!-- Flight Number Label -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Flight Number"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:paddingTop="16dp"
+            android:paddingBottom="4dp" />
+
         <!-- Flight Number -->
         <EditText
             android:id="@+id/et_flight_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Flight Number"
-            android:inputType="text" />
+            android:hint="Enter Flight Number"
+            android:padding="12dp" />
+
+        <!-- Departure Place Label -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Departure Place (City)"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:paddingTop="16dp"
+            android:paddingBottom="4dp" />
 
         <!-- Departure Place -->
         <EditText
             android:id="@+id/et_departure_place"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Departure Place (City)"
-            android:inputType="text" />
+            android:hint="Enter Departure Place"
+            android:padding="12dp" />
+
+        <!-- Destination Label -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Destination (City)"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:paddingTop="16dp"
+            android:paddingBottom="4dp" />
 
         <!-- Destination -->
         <EditText
             android:id="@+id/et_destination"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Destination (City)"
-            android:inputType="text" />
+            android:hint="Enter Destination"
+            android:padding="12dp" />
+
+        <!-- Departure Date Label -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Departure Date"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:paddingTop="16dp"
+            android:paddingBottom="4dp" />
 
         <!-- Departure Date -->
         <EditText
             android:id="@+id/et_departure_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Departure Date"
+            android:hint="Select Departure Date"
             android:focusable="false"
             android:clickable="true"
-            android:inputType="none" />
+            android:padding="12dp" />
+
+        <!-- Departure Time Label -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Departure Time"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:paddingTop="16dp"
+            android:paddingBottom="4dp" />
 
         <!-- Departure Time -->
         <EditText
             android:id="@+id/et_departure_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Departure Time"
+            android:hint="Select Departure Time"
             android:focusable="false"
             android:clickable="true"
-            android:inputType="none" />
+            android:padding="12dp" />
+
+        <!-- Arrival Date Label -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Arrival Date"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:paddingTop="16dp"
+            android:paddingBottom="4dp" />
 
         <!-- Arrival Date -->
         <EditText
             android:id="@+id/et_arrival_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Arrival Date"
+            android:hint="Select Arrival Date"
             android:focusable="false"
             android:clickable="true"
-            android:inputType="none" />
+            android:padding="12dp" />
+
+        <!-- Arrival Time Label -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Arrival Time"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:paddingTop="16dp"
+            android:paddingBottom="4dp" />
 
         <!-- Arrival Time -->
         <EditText
             android:id="@+id/et_arrival_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Arrival Time"
+            android:hint="Select Arrival Time"
             android:focusable="false"
             android:clickable="true"
-            android:inputType="none" />
+            android:padding="12dp" />
+
+        <!-- Duration Label -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Duration"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:paddingTop="16dp"
+            android:paddingBottom="4dp" />
 
         <!-- Duration -->
         <EditText
             android:id="@+id/et_duration"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Duration (e.g., 2h 30m)"
-            android:inputType="text" />
+            android:hint="Enter Duration (e.g., 2h 30m)"
+            android:padding="12dp"
+            android:inputType="number" />
+
+        <!-- Aircraft Model Label -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Aircraft Model"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:paddingTop="16dp"
+            android:paddingBottom="4dp" />
 
         <!-- Aircraft Model -->
         <EditText
             android:id="@+id/et_aircraft_model"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Aircraft Model"
-            android:inputType="text" />
+            android:hint="Enter Aircraft Model"
+            android:padding="12dp" />
+
+        <!-- Maximum Seats Label -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Maximum Seats"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:paddingTop="16dp"
+            android:paddingBottom="4dp" />
 
         <!-- Maximum Seats -->
         <EditText
             android:id="@+id/et_max_seats"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Maximum Number of Seats"
-            android:inputType="number" />
+            android:hint="Enter Maximum Seats"
+            android:inputType="number"
+            android:padding="12dp" />
+
+        <!-- Booking Open Date Label -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Booking Open Date"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:paddingTop="16dp"
+            android:paddingBottom="4dp" />
 
         <!-- Booking Open Date -->
         <EditText
             android:id="@+id/et_booking_open_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Booking Open Date"
+            android:hint="Select Booking Open Date"
             android:focusable="false"
             android:clickable="true"
-            android:inputType="none" />
+            android:padding="12dp" />
 
-        <!-- Prices -->
+        <!-- Economy Class Price Label -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Economy Class Price"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:paddingTop="16dp"
+            android:paddingBottom="4dp" />
+
+        <!-- Economy Class Price -->
         <EditText
             android:id="@+id/et_price_economy"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Price for Economy Class"
-            android:inputType="numberDecimal" />
+            android:hint="Enter Price for Economy Class"
+            android:inputType="numberDecimal"
+            android:padding="12dp" />
 
+        <!-- Business Class Price Label -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Business Class Price"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:paddingTop="16dp"
+            android:paddingBottom="4dp" />
+
+        <!-- Business Class Price -->
         <EditText
             android:id="@+id/et_price_business"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Price for Business Class"
-            android:inputType="numberDecimal" />
+            android:hint="Enter Price for Business Class"
+            android:inputType="numberDecimal"
+            android:padding="12dp" />
 
+        <!-- Extra Baggage Price Label -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Price per Extra Baggage"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:paddingTop="16dp"
+            android:paddingBottom="4dp" />
+
+        <!-- Extra Baggage Price -->
         <EditText
             android:id="@+id/et_price_extra_baggage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Price per Extra Baggage"
-            android:inputType="numberDecimal" />
+            android:hint="Enter Price per Extra Baggage"
+            android:inputType="numberDecimal"
+            android:padding="12dp" />
+
+        <!-- Is Recurrent Label -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Is Recurrent"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:paddingTop="16dp"
+            android:paddingBottom="4dp" />
 
         <!-- Is Recurrent -->
         <Spinner
             android:id="@+id/spinner_recurrent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:entries="@array/recurrent_options" />
+            android:entries="@array/recurrent_options"
+            android:layout_margin="10dp"/>
 
         <!-- Submit Button -->
         <Button
             android:id="@+id/btn_submit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Create Flight" />
+            android:text="Create Flight"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp" />
 
     </LinearLayout>
 </ScrollView>

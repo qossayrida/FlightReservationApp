@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
 import com.example.flightreservationapp.model.*;
 
 import java.text.SimpleDateFormat;
@@ -128,24 +130,40 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
 
 
-    public Cursor searchFlights(String departureCity, String arrivalCity, String departureDate, String sortingOption) {
+    public Cursor searchFlights(String departureCity, String arrivalCity, String departureDate, String sortingOption, String passportNumber) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT * FROM FLIGHTS WHERE DEPARTURE_PLACE = ? AND DESTINATION = ? AND DEPARTURE_DATE = ?";
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String currentDate = dateFormat.format(new Date());
+        String query = "SELECT * FROM FLIGHTS f " +
+                "WHERE f.DEPARTURE_PLACE = ? " +
+                "AND f.DESTINATION = ? " +
+                "AND f.DEPARTURE_DATE = ? " +
+                "AND f.BOOKING_OPEN_DATE >=? " + // Booking is open
+                "AND f.MAX_SEATS > f.CURRENT_RESERVATIONS " + // Flight is not full
+                "AND NOT EXISTS (SELECT 1 FROM RESERVATIONS r WHERE r.FLIGHT_NUMBER = f.FLIGHT_NUMBER AND r.PASSPORT_NUMBER = ?)"; // Not already reserved
 
         // Sorting by lowest cost or shortest duration
         if (sortingOption.equals("Lowest Cost")) {
-            query += " ORDER BY ECONOMY_CLASS_PRICE ASC";
-        } else {
-            query += " ORDER BY DURATION ASC";
+            query += " ORDER BY f.ECONOMY_CLASS_PRICE ASC";
+        } else if (sortingOption.equals("Shortest Duration")) {
+            query += " ORDER BY f.DURATION ASC";
         }
-
-        return db.rawQuery(query, new String[]{departureCity, arrivalCity, departureDate});
+        Log.d("=============>Dubug",query);
+        return db.rawQuery(query, new String[]{departureCity, arrivalCity, departureDate, passportNumber});
     }
 
-    public Cursor searchReturnFlights(String departureCity, String arrivalCity, String returnDate, String sortingOption) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT * FROM FLIGHTS WHERE DEPARTURE_PLACE = ? AND DESTINATION = ? AND DEPARTURE_DATE = ?";
 
+    public Cursor searchReturnFlights(String departureCity, String arrivalCity, String returnDate, String sortingOption,String passportNumber) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String currentDate = dateFormat.format(new Date());
+        String query = "SELECT * FROM FLIGHTS f " +
+                "WHERE f.DEPARTURE_PLACE = ? " +
+                "AND f.DESTINATION = ? " +
+                "AND f.DEPARTURE_DATE = ? " +
+                "AND f.BOOKING_OPEN_DATE >= ? " + // Booking is open
+                "AND f.MAX_SEATS > f.CURRENT_RESERVATIONS " + // Flight is not full
+                "AND NOT EXISTS (SELECT 1 FROM RESERVATIONS r WHERE r.FLIGHT_NUMBER = f.FLIGHT_NUMBER AND r.PASSPORT_NUMBER = ?)";
         // Sorting by lowest cost or shortest duration
         if (sortingOption.equals("Lowest Cost")) {
             query += " ORDER BY ECONOMY_CLASS_PRICE ASC";
@@ -153,7 +171,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             query += " ORDER BY DURATION ASC";
         }
 
-        return db.rawQuery(query, new String[]{arrivalCity,departureCity, returnDate});
+        return db.rawQuery(query, new String[]{arrivalCity,departureCity, returnDate,currentDate,passportNumber});
     }
 
     public Cursor getReservationsForFlight(String flightNumber) {
@@ -216,6 +234,26 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.update("RESERVATIONS", values, "RESERVATION_ID = ?", new String[]{reservationId});
     }
 
+    public boolean updateFlight(String oldFlightNumber, String newFlightNumber, String departurePlace, String destination,
+                                String departureDate, String departureTime, String arrivalDate, String arrivalTime, int duration) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        // Update the flight details
+        values.put("FLIGHT_NUMBER", newFlightNumber);
+        values.put("DEPARTURE_PLACE", departurePlace);
+        values.put("DESTINATION", destination);
+        values.put("DEPARTURE_DATE", departureDate);
+        values.put("DEPARTURE_TIME", departureTime);
+        values.put("ARRIVAL_DATE", arrivalDate);
+        values.put("ARRIVAL_TIME", arrivalTime);
+        values.put("DURATION", duration);
+
+        // Execute the update operation and check the number of rows affected
+        int rowsAffected = db.update("FLIGHTS", values, "FLIGHT_NUMBER = ?", new String[]{oldFlightNumber});
+
+        return rowsAffected > 0;
+    }
 
 
 

@@ -33,7 +33,8 @@ public class SearchFlightsFragment extends Fragment {
     private RadioGroup rgTripType;
     private Spinner spSorting;
     private Button btnSearch;
-    private ListView lvFlightResults;
+    private ListView lvOneWayFlightResults;
+    private ListView lvReturnWayFlightResults;
     private DataBaseHelper dbHelper;
     private ArrayList<Flight> flightList;
     private User savedUser = null;
@@ -51,7 +52,8 @@ public class SearchFlightsFragment extends Fragment {
         rgTripType = view.findViewById(R.id.rg_trip_type);
         spSorting = view.findViewById(R.id.sp_sorting);
         btnSearch = view.findViewById(R.id.btn_search);
-        lvFlightResults = view.findViewById(R.id.lv_one_way_flight_results);
+        lvOneWayFlightResults = view.findViewById(R.id.lv_one_way_flight_results);
+        lvReturnWayFlightResults = view.findViewById(R.id.lv_Return_way_flight_results);
 
         setDatePicker(etDepartureDate);
         setDatePicker(etReturnDate);
@@ -86,7 +88,7 @@ public class SearchFlightsFragment extends Fragment {
 
     private void DivideHeightInHalf() {
         // Get the parent layout of the ListView
-        View parent = (View) lvFlightResults.getParent();
+        View parent = (View) lvOneWayFlightResults.getParent();
 
         // Adjust layout params based on the parent layout type
         if (parent instanceof FrameLayout) {
@@ -94,19 +96,19 @@ public class SearchFlightsFragment extends Fragment {
                     FrameLayout.LayoutParams.MATCH_PARENT,
                     FrameLayout.LayoutParams.MATCH_PARENT
             );
-            lvFlightResults.setLayoutParams(params);
+            lvOneWayFlightResults.setLayoutParams(params);
         } else if (parent instanceof LinearLayout) {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     FrameLayout.LayoutParams.MATCH_PARENT
             );
-            lvFlightResults.setLayoutParams(params);
+            lvOneWayFlightResults.setLayoutParams(params);
         }
     }
 
     private void setFullHeight() {
         // Get the parent layout of the ListView
-        View parent = (View) lvFlightResults.getParent();
+        View parent = (View) lvOneWayFlightResults.getParent();
 
         // Adjust layout params based on the parent layout type
         if (parent instanceof FrameLayout) {
@@ -114,13 +116,13 @@ public class SearchFlightsFragment extends Fragment {
                     FrameLayout.LayoutParams.MATCH_PARENT,
                     240
             );
-            lvFlightResults.setLayoutParams(params);
+            lvOneWayFlightResults.setLayoutParams(params);
         } else if (parent instanceof LinearLayout) {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     240
             );
-            lvFlightResults.setLayoutParams(params);
+            lvOneWayFlightResults.setLayoutParams(params);
         }
     }
 
@@ -135,7 +137,39 @@ public class SearchFlightsFragment extends Fragment {
         if (selectedTripType == R.id.rb_one_way) {
             returnDate = "";
         }else{
+            Cursor cursor = dbHelper.searchReturnFlights(departureCity, arrivalCity, returnDate, sortingOption,savedUser.getPassportNumber());
 
+            if (cursor != null && cursor.moveToFirst()) {
+                flightList.clear(); // Clear the list before adding new results
+
+                do {
+                    String flightNumber = cursor.getString(cursor.getColumnIndexOrThrow("FLIGHT_NUMBER"));
+                    String departurePlace = cursor.getString(cursor.getColumnIndexOrThrow("DEPARTURE_PLACE"));
+                    String destination = cursor.getString(cursor.getColumnIndexOrThrow("DESTINATION"));
+                    String aircraftModel = cursor.getString(cursor.getColumnIndexOrThrow("AIRCRAFT_MODEL"));
+                    String departureDateObj = cursor.getString(cursor.getColumnIndexOrThrow("DEPARTURE_DATE"));
+                    String departureTime = cursor.getString(cursor.getColumnIndexOrThrow("DEPARTURE_TIME"));
+                    String arrivalDate = cursor.getString(cursor.getColumnIndexOrThrow("ARRIVAL_DATE"));
+                    String arrivalTime = cursor.getString(cursor.getColumnIndexOrThrow("ARRIVAL_TIME"));
+                    int duration = cursor.getInt(cursor.getColumnIndexOrThrow("DURATION"));
+                    int maxSeats = cursor.getInt(cursor.getColumnIndexOrThrow("MAX_SEATS"));
+                    String bookingOpenDate = cursor.getString(cursor.getColumnIndexOrThrow("BOOKING_OPEN_DATE"));
+                    double economyClassPrice = cursor.getDouble(cursor.getColumnIndexOrThrow("ECONOMY_CLASS_PRICE"));
+                    double businessClassPrice = cursor.getDouble(cursor.getColumnIndexOrThrow("BUSINESS_CLASS_PRICE"));
+                    double extraBaggagePrice = cursor.getDouble(cursor.getColumnIndexOrThrow("EXTRA_BAGGAGE_PRICE"));
+                    Flight.RecurrentType recurrent = Flight.RecurrentType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("RECURRENT")));
+
+                    Flight flight = new Flight(flightNumber, departurePlace, destination, departureDateObj, departureTime,
+                            arrivalDate, arrivalTime, duration, aircraftModel, maxSeats,
+                            bookingOpenDate, economyClassPrice, businessClassPrice, extraBaggagePrice, recurrent);
+                    flightList.add(flight);
+
+                } while (cursor.moveToNext());
+                FlightAdapter adapter = new FlightAdapter(getContext(), flightList);
+                lvReturnWayFlightResults.setAdapter(adapter);
+
+                lvReturnWayFlightResults.setOnItemClickListener((parent, view, position, id) -> showFlightDetailsDialog(flightList.get(position)));
+            }
         }
 
         if (TextUtils.isEmpty(departureCity) || TextUtils.isEmpty(arrivalCity) || TextUtils.isEmpty(departureDate)) {
@@ -144,7 +178,7 @@ public class SearchFlightsFragment extends Fragment {
         }
 
         // Perform database query using dbHelper with sorting and filtering criteria
-        Cursor cursor = dbHelper.searchFlights(departureCity, arrivalCity, departureDate, sortingOption);
+        Cursor cursor = dbHelper.searchFlights(departureCity, arrivalCity, departureDate, sortingOption,savedUser.getPassportNumber());
 
         if (cursor != null && cursor.moveToFirst()) {
             flightList.clear(); // Clear the list before adding new results
@@ -176,16 +210,16 @@ public class SearchFlightsFragment extends Fragment {
             cursor.close();
 
             FlightAdapter adapter = new FlightAdapter(getContext(), flightList);
-            lvFlightResults.setAdapter(adapter);
+            lvOneWayFlightResults.setAdapter(adapter);
 
-            lvFlightResults.setOnItemClickListener((parent, view, position, id) -> showFlightDetailsDialog(flightList.get(position)));
+            lvOneWayFlightResults.setOnItemClickListener((parent, view, position, id) -> showFlightDetailsDialog(flightList.get(position)));
         } else {
             flightList.clear(); // Clear the list if no results are found
             Toast.makeText(getContext(), "No flights found for the specified criteria", Toast.LENGTH_SHORT).show();
 
             // Update the ListView to reflect the cleared list
             FlightAdapter adapter = new FlightAdapter(getContext(), flightList);
-            lvFlightResults.setAdapter(adapter);
+            lvOneWayFlightResults.setAdapter(adapter);
         }
     }
 
