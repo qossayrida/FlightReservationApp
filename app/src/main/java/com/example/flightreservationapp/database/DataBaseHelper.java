@@ -138,7 +138,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 "WHERE f.DEPARTURE_PLACE = ? " +
                 "AND f.DESTINATION = ? " +
                 "AND f.DEPARTURE_DATE = ? " +
-                "AND f.BOOKING_OPEN_DATE >=? " + // Booking is open
+                "AND f.BOOKING_OPEN_DATE <=? " + // Booking is open
                 "AND f.MAX_SEATS > f.CURRENT_RESERVATIONS " + // Flight is not full
                 "AND NOT EXISTS (SELECT 1 FROM RESERVATIONS r WHERE r.FLIGHT_NUMBER = f.FLIGHT_NUMBER AND r.PASSPORT_NUMBER = ?)"; // Not already reserved
 
@@ -149,7 +149,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             query += " ORDER BY f.DURATION ASC";
         }
         Log.d("=============>Dubug",query);
-        return db.rawQuery(query, new String[]{departureCity, arrivalCity, departureDate, passportNumber});
+        return db.rawQuery(query, new String[]{departureCity, arrivalCity, departureDate,currentDate, passportNumber});
     }
 
 
@@ -161,7 +161,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 "WHERE f.DEPARTURE_PLACE = ? " +
                 "AND f.DESTINATION = ? " +
                 "AND f.DEPARTURE_DATE = ? " +
-                "AND f.BOOKING_OPEN_DATE >= ? " + // Booking is open
+                "AND f.BOOKING_OPEN_DATE <= ? " + // Booking is open
                 "AND f.MAX_SEATS > f.CURRENT_RESERVATIONS " + // Flight is not full
                 "AND NOT EXISTS (SELECT 1 FROM RESERVATIONS r WHERE r.FLIGHT_NUMBER = f.FLIGHT_NUMBER AND r.PASSPORT_NUMBER = ?)";
         // Sorting by lowest cost or shortest duration

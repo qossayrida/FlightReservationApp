@@ -19,7 +19,10 @@ import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class CreateFlightFragment extends Fragment {
 
@@ -164,6 +167,21 @@ public class CreateFlightFragment extends Fragment {
                         // Format the month and day to always be two digits
                         String formattedDate = String.format("%04d-%02d-%02d", year1, monthOfYear + 1, dayOfMonth);
                         editText.setText(formattedDate);
+
+                        // After the date is set, calculate the duration
+                        int duration = calculateDuration(
+                                etDepartureDate.getText().toString().trim(),
+                                etDepartureTime.getText().toString().trim(),
+                                etArrivalDate.getText().toString().trim(),
+                                etArrivalTime.getText().toString().trim()
+                        );
+
+                        // Check if duration calculation was successful
+                        if (duration != -1) {
+                            etDuration.setText(String.valueOf(duration)); // Set duration in minutes
+                        } else {
+                            etDuration.setText(""); // Clear duration if calculation failed
+                        }
                     },
                     year, month, day);
             datePickerDialog.show();
@@ -178,11 +196,47 @@ public class CreateFlightFragment extends Fragment {
 
             TimePickerDialog timePickerDialog = new TimePickerDialog(
                     getContext(),
-                    (view, hourOfDay, minute1) ->
-                            editText.setText(hourOfDay + ":" + minute1),
+                    (view, hourOfDay, minute1) -> {
+                        // Format the time to always be two digits
+                        String formattedTime = String.format("%02d:%02d", hourOfDay, minute1);
+                        editText.setText(formattedTime);
+
+                        // After the time is set, calculate the duration
+                        int duration = calculateDuration(
+                                etDepartureDate.getText().toString().trim(),
+                                etDepartureTime.getText().toString().trim(),
+                                etArrivalDate.getText().toString().trim(),
+                                etArrivalTime.getText().toString().trim()
+                        );
+
+                        // Check if duration calculation was successful
+                        if (duration != -1) {
+                            etDuration.setText(String.valueOf(duration)); // Set duration in minutes
+                        } else {
+                            etDuration.setText(""); // Clear duration if calculation failed
+                        }
+                    },
                     hour, minute, false);
             timePickerDialog.show();
         });
+    }
+
+
+    private int calculateDuration(String departureDate, String departureTime, String arrivalDate, String arrivalTime) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        try {
+            Date depDateTime = format.parse(departureDate + " " + departureTime);
+            Date arrDateTime = format.parse(arrivalDate + " " + arrivalTime);
+
+            long difference = arrDateTime.getTime() - depDateTime.getTime();
+
+            long diffMinutes = difference / (60 * 1000);
+
+            return (int) diffMinutes;
+
+        } catch (ParseException e) {
+            return -1; // Return -1 to indicate an error in calculation
+        }
     }
 
 

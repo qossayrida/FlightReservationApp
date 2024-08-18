@@ -1,5 +1,7 @@
 package com.example.flightreservationapp.activity.admin_fragment;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,11 @@ import androidx.fragment.app.DialogFragment;
 import com.example.flightreservationapp.R;
 import com.example.flightreservationapp.database.DataBaseHelper;
 import com.example.flightreservationapp.model.Flight;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 public class EditFlightDialogFragment extends DialogFragment {
 
@@ -53,6 +60,7 @@ public class EditFlightDialogFragment extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_create_flight, container, false);
 
+
         // Initialize views
         etFlightNumber = view.findViewById(R.id.et_flight_number);
         etDeparturePlace = view.findViewById(R.id.et_departure_place);
@@ -70,6 +78,8 @@ public class EditFlightDialogFragment extends DialogFragment {
         etPriceExtraBaggage = view.findViewById(R.id.et_price_extra_baggage);
         spinnerRecurrent = view.findViewById(R.id.spinner_recurrent);
         btnUpdateFlight = view.findViewById(R.id.btn_submit);
+
+        setUpDateAndTimePickers();
 
         // Populate fields with the current flight data
         if (flight != null) {
@@ -135,6 +145,98 @@ public class EditFlightDialogFragment extends DialogFragment {
             dismiss();
         } else {
             Toast.makeText(getContext(), "Failed to update flight", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void setUpDateAndTimePickers() {
+        setDatePicker(etDepartureDate);
+        setTimePicker(etDepartureTime);
+        setDatePicker(etArrivalDate);
+        setTimePicker(etArrivalTime);
+        setDatePicker(etBookingOpenDate);
+    }
+
+    private void setDatePicker(EditText editText) {
+        editText.setOnClickListener(v -> {
+            final Calendar c = Calendar.getInstance();
+            int year = c.get(Calendar.YEAR);
+            int month = c.get(Calendar.MONTH);
+            int day = c.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(
+                    getContext(),
+                    (view, year1, monthOfYear, dayOfMonth) -> {
+                        // Format the month and day to always be two digits
+                        String formattedDate = String.format("%04d-%02d-%02d", year1, monthOfYear + 1, dayOfMonth);
+                        editText.setText(formattedDate);
+
+                        // After the date is set, calculate the duration
+                        int duration = calculateDuration(
+                                etDepartureDate.getText().toString().trim(),
+                                etDepartureTime.getText().toString().trim(),
+                                etArrivalDate.getText().toString().trim(),
+                                etArrivalTime.getText().toString().trim()
+                        );
+
+                        // Check if duration calculation was successful
+                        if (duration != -1) {
+                            etDuration.setText(String.valueOf(duration)); // Set duration in minutes
+                        } else {
+                            etDuration.setText(""); // Clear duration if calculation failed
+                        }
+                    },
+                    year, month, day);
+            datePickerDialog.show();
+        });
+    }
+
+    private void setTimePicker(EditText editText) {
+        editText.setOnClickListener(v -> {
+            final Calendar c = Calendar.getInstance();
+            int hour = c.get(Calendar.HOUR_OF_DAY);
+            int minute = c.get(Calendar.MINUTE);
+
+            TimePickerDialog timePickerDialog = new TimePickerDialog(
+                    getContext(),
+                    (view, hourOfDay, minute1) -> {
+                        // Format the time to always be two digits
+                        String formattedTime = String.format("%02d:%02d", hourOfDay, minute1);
+                        editText.setText(formattedTime);
+
+                        // After the time is set, calculate the duration
+                        int duration = calculateDuration(
+                                etDepartureDate.getText().toString().trim(),
+                                etDepartureTime.getText().toString().trim(),
+                                etArrivalDate.getText().toString().trim(),
+                                etArrivalTime.getText().toString().trim()
+                        );
+
+                        // Check if duration calculation was successful
+                        if (duration != -1) {
+                            etDuration.setText(String.valueOf(duration)); // Set duration in minutes
+                        } else {
+                            etDuration.setText(""); // Clear duration if calculation failed
+                        }
+                    },
+                    hour, minute, false);
+            timePickerDialog.show();
+        });
+    }
+
+    private int calculateDuration(String departureDate, String departureTime, String arrivalDate, String arrivalTime) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        try {
+            Date depDateTime = format.parse(departureDate + " " + departureTime);
+            Date arrDateTime = format.parse(arrivalDate + " " + arrivalTime);
+
+            long difference = arrDateTime.getTime() - depDateTime.getTime();
+
+            long diffMinutes = difference / (60 * 1000);
+
+            return (int) diffMinutes;
+
+        } catch (ParseException e) {
+            return -1; // Return -1 to indicate an error in calculation
         }
     }
 }
