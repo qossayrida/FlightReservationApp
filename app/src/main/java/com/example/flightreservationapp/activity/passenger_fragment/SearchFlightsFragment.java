@@ -2,10 +2,10 @@ package com.example.flightreservationapp.activity.passenger_fragment;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +25,6 @@ import com.example.flightreservationapp.utility.SharedPrefManager;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 public class SearchFlightsFragment extends Fragment {
 
@@ -52,7 +51,7 @@ public class SearchFlightsFragment extends Fragment {
         rgTripType = view.findViewById(R.id.rg_trip_type);
         spSorting = view.findViewById(R.id.sp_sorting);
         btnSearch = view.findViewById(R.id.btn_search);
-        lvFlightResults = view.findViewById(R.id.lv_flight_results);
+        lvFlightResults = view.findViewById(R.id.lv_one_way_flight_results);
 
         setDatePicker(etDepartureDate);
         setDatePicker(etReturnDate);
@@ -65,9 +64,11 @@ public class SearchFlightsFragment extends Fragment {
             if (checkedId == R.id.rb_round_trip) {
                 etReturnDate.setVisibility(View.VISIBLE);
                 tvReturnDateLabel.setVisibility(View.VISIBLE);
+                setFullHeight();
             } else {
                 etReturnDate.setVisibility(View.GONE);
                 tvReturnDateLabel.setVisibility(View.GONE);
+                DivideHeightInHalf();
             }
         });
 
@@ -83,6 +84,46 @@ public class SearchFlightsFragment extends Fragment {
         return view;
     }
 
+    private void DivideHeightInHalf() {
+        // Get the parent layout of the ListView
+        View parent = (View) lvFlightResults.getParent();
+
+        // Adjust layout params based on the parent layout type
+        if (parent instanceof FrameLayout) {
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT,
+                    FrameLayout.LayoutParams.MATCH_PARENT
+            );
+            lvFlightResults.setLayoutParams(params);
+        } else if (parent instanceof LinearLayout) {
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    FrameLayout.LayoutParams.MATCH_PARENT
+            );
+            lvFlightResults.setLayoutParams(params);
+        }
+    }
+
+    private void setFullHeight() {
+        // Get the parent layout of the ListView
+        View parent = (View) lvFlightResults.getParent();
+
+        // Adjust layout params based on the parent layout type
+        if (parent instanceof FrameLayout) {
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT,
+                    240
+            );
+            lvFlightResults.setLayoutParams(params);
+        } else if (parent instanceof LinearLayout) {
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    240
+            );
+            lvFlightResults.setLayoutParams(params);
+        }
+    }
+
     private void searchFlights() {
         String departureCity = etDepartureCity.getText().toString().trim();
         String arrivalCity = etArrivalCity.getText().toString().trim();
@@ -93,6 +134,8 @@ public class SearchFlightsFragment extends Fragment {
         int selectedTripType = rgTripType.getCheckedRadioButtonId();
         if (selectedTripType == R.id.rb_one_way) {
             returnDate = "";
+        }else{
+
         }
 
         if (TextUtils.isEmpty(departureCity) || TextUtils.isEmpty(arrivalCity) || TextUtils.isEmpty(departureDate)) {
@@ -101,7 +144,7 @@ public class SearchFlightsFragment extends Fragment {
         }
 
         // Perform database query using dbHelper with sorting and filtering criteria
-        Cursor cursor = dbHelper.searchFlights(departureCity, arrivalCity, departureDate, returnDate, sortingOption);
+        Cursor cursor = dbHelper.searchFlights(departureCity, arrivalCity, departureDate, sortingOption);
 
         if (cursor != null && cursor.moveToFirst()) {
             flightList.clear(); // Clear the list before adding new results

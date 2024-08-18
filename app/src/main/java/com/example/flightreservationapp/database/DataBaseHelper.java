@@ -128,14 +128,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
 
 
-    public Cursor searchFlights(String departureCity, String arrivalCity, String departureDate, String returnDate, String sortingOption) {
+    public Cursor searchFlights(String departureCity, String arrivalCity, String departureDate, String sortingOption) {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT * FROM FLIGHTS WHERE DEPARTURE_PLACE = ? AND DESTINATION = ? AND DEPARTURE_DATE = ?";
-
-        // Add return date logic for round-trip
-        if (!returnDate.isEmpty()) {
-            query += " AND ARRIVAL_DATE = ?";
-        }
 
         // Sorting by lowest cost or shortest duration
         if (sortingOption.equals("Lowest Cost")) {
@@ -144,8 +139,21 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             query += " ORDER BY DURATION ASC";
         }
 
-        return db.rawQuery(query, returnDate.isEmpty() ? new String[]{departureCity, arrivalCity, departureDate} :
-                new String[]{departureCity, arrivalCity, departureDate, returnDate});
+        return db.rawQuery(query, new String[]{departureCity, arrivalCity, departureDate});
+    }
+
+    public Cursor searchReturnFlights(String departureCity, String arrivalCity, String returnDate, String sortingOption) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM FLIGHTS WHERE DEPARTURE_PLACE = ? AND DESTINATION = ? AND DEPARTURE_DATE = ?";
+
+        // Sorting by lowest cost or shortest duration
+        if (sortingOption.equals("Lowest Cost")) {
+            query += " ORDER BY ECONOMY_CLASS_PRICE ASC";
+        } else {
+            query += " ORDER BY DURATION ASC";
+        }
+
+        return db.rawQuery(query, new String[]{arrivalCity,departureCity, returnDate});
     }
 
     public Cursor getReservationsForFlight(String flightNumber) {

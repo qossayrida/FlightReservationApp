@@ -5,48 +5,64 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- Departure City Label -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Departure City"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:paddingBottom="4dp"/>
+        android:layout_height="70dp"
+        android:orientation="horizontal">
 
-    <!-- Departure City -->
-    <EditText
-        android:id="@+id/et_departure_city"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter Departure City"/>
+        <LinearLayout
+            android:layout_width="195dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <!-- Departure City Label -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Departure City"
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
-    <!-- Arrival City Label -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Arrival City"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:paddingTop="8dp"
-        android:paddingBottom="4dp"/>
+            <!-- Departure City -->
+            <EditText
+                android:id="@+id/et_departure_city"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Departure City"/>
+        </LinearLayout>
 
-    <!-- Arrival City -->
-    <EditText
-        android:id="@+id/et_arrival_city"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter Arrival City"/>
+        <LinearLayout
+            android:layout_width="195dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginLeft="10dp">
+            <!-- Arrival City Label -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Arrival City"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <!-- Arrival City -->
+            <EditText
+                android:id="@+id/et_arrival_city"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Arrival City"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+
 
     <!-- Departure Date Label -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Departure Date"
-        android:textSize="16sp"
+        android:textSize="15sp"
         android:textStyle="bold"
-        android:paddingTop="8dp"
-        android:paddingBottom="4dp"/>
+        android:paddingTop="8dp" />
 
     <!-- Departure Date -->
     <EditText
@@ -63,10 +79,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Trip Type"
-        android:textSize="16sp"
+        android:textSize="15sp"
         android:textStyle="bold"
-        android:paddingTop="8dp"
-        android:paddingBottom="4dp"/>
+        android:paddingTop="8dp"/>
 
     <!-- One Way / Round Trip -->
     <RadioGroup
@@ -92,10 +107,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Return Date"
-        android:textSize="16sp"
+        android:textSize="15sp"
         android:textStyle="bold"
         android:paddingTop="8dp"
-        android:paddingBottom="4dp"
         android:visibility="gone"
         android:id="@+id/tv_return_date_label"/>
 
@@ -115,10 +129,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Sort By"
-        android:textSize="16sp"
+        android:textSize="15sp"
         android:textStyle="bold"
-        android:paddingTop="8dp"
-        android:paddingBottom="4dp"/>
+        android:paddingTop="8dp" />
 
     <!-- Sorting -->
     <Spinner
@@ -134,14 +147,37 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Search"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"/>
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="One way trip"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:paddingTop="8dp" />
 
     <!-- Flight Results ListView -->
     <ListView
-        android:id="@+id/lv_flight_results"
+        android:id="@+id/lv_one_way_flight_results"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible" />
+
+
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="visible"/>
+        android:text="Return trip"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:paddingTop="8dp" />
+
+    <ListView
+        android:id="@+id/lv_Return_way_flight_results"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible" />
 
 </LinearLayout>
