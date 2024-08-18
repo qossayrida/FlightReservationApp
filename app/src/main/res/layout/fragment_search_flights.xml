@@ -23,11 +23,12 @@
                 android:textStyle="bold" />
 
             <!-- Departure City -->
-            <EditText
-                android:id="@+id/et_departure_city"
+            <Spinner
+                android:id="@+id/sp_departure_city"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Enter Departure City"/>
+                android:layout_margin="10dp"
+                android:entries="@array/city_list"/>
         </LinearLayout>
 
         <LinearLayout
@@ -44,11 +45,12 @@
                 android:textStyle="bold" />
 
             <!-- Arrival City -->
-            <EditText
-                android:id="@+id/et_arrival_city"
+            <Spinner
+                android:id="@+id/sp_arrival_city"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Enter Arrival City"/>
+                android:layout_margin="10dp"
+                android:entries="@array/city_list"/>
         </LinearLayout>
 
     </LinearLayout>

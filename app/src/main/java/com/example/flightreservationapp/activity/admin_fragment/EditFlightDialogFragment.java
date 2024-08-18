@@ -63,8 +63,8 @@ public class EditFlightDialogFragment extends DialogFragment {
 
         // Initialize views
         etFlightNumber = view.findViewById(R.id.et_flight_number);
-        etDeparturePlace = view.findViewById(R.id.et_departure_place);
-        etDestination = view.findViewById(R.id.et_destination);
+        etDeparturePlace = view.findViewById(R.id.sp_departure_place);
+        etDestination = view.findViewById(R.id.sp_destination);
         etDepartureDate = view.findViewById(R.id.et_departure_date);
         etDepartureTime = view.findViewById(R.id.et_departure_time);
         etArrivalDate = view.findViewById(R.id.et_arrival_date);

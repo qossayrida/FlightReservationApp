@@ -9,6 +9,44 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <!-- Departure Place Label -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Departure Place (City)"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:paddingTop="16dp"
+            android:paddingBottom="4dp" />
+
+        <!-- Departure Place -->
+        <Spinner
+            android:id="@+id/sp_departure_place"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:entries="@array/city_list"/>
+
+        <!-- Destination Label -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Destination (City)"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:paddingTop="16dp"
+            android:paddingBottom="4dp" />
+
+        <!-- Destination -->
+        <Spinner
+            android:id="@+id/sp_destination"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/city_list"
+            android:padding="12dp" />
+
         <!-- Flight Number Label -->
         <TextView
             android:layout_width="match_parent"
@@ -26,44 +64,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Enter Flight Number"
-            android:padding="12dp" />
-
-        <!-- Departure Place Label -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Departure Place (City)"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="#333333"
-            android:paddingTop="16dp"
-            android:paddingBottom="4dp" />
-
-        <!-- Departure Place -->
-        <EditText
-            android:id="@+id/et_departure_place"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Enter Departure Place"
-            android:padding="12dp" />
-
-        <!-- Destination Label -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Destination (City)"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="#333333"
-            android:paddingTop="16dp"
-            android:paddingBottom="4dp" />
-
-        <!-- Destination -->
-        <EditText
-            android:id="@+id/et_destination"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Enter Destination"
             android:padding="12dp" />
 
         <!-- Departure Date Label -->

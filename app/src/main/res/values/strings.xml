@@ -50,4 +50,27 @@
     </string-array>
 
 
+
+    <string-array name="city_list">
+        <item>Atlanta</item>
+        <item>Auckland</item>
+        <item>Cairo</item>
+        <item>Chicago</item>
+        <item>Dubai</item>
+        <item>Frankfurt</item>
+        <item>London</item>
+        <item>Los Angeles</item>
+        <item>Miami</item>
+        <item>Mumbai</item>
+        <item>New Delhi</item>
+        <item>New York</item>
+        <item>Osaka</item>
+        <item>Paris</item>
+        <item>San Francisco</item>
+        <item>Sapporo</item>
+        <item>Sydney</item>
+        <item>Tokyo</item>
+    </string-array>
+
+
 </resources>

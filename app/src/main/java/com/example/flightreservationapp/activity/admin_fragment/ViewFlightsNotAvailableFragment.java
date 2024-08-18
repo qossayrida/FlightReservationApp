@@ -66,16 +66,21 @@ public class ViewFlightsNotAvailableFragment extends Fragment {
                 String arrivalTime = cursor.getString(cursor.getColumnIndexOrThrow("ARRIVAL_TIME"));
                 int duration = cursor.getInt(cursor.getColumnIndexOrThrow("DURATION"));
                 int maxSeats = cursor.getInt(cursor.getColumnIndexOrThrow("MAX_SEATS"));
+                int currentReservations = cursor.getInt(cursor.getColumnIndexOrThrow("CURRENT_RESERVATIONS"));
+                int missedFlights = cursor.getInt(cursor.getColumnIndexOrThrow("MISSED_FLIGHTS"));
                 String bookingOpenDate = cursor.getString(cursor.getColumnIndexOrThrow("BOOKING_OPEN_DATE"));
                 double economyClassPrice = cursor.getDouble(cursor.getColumnIndexOrThrow("ECONOMY_CLASS_PRICE"));
                 double businessClassPrice = cursor.getDouble(cursor.getColumnIndexOrThrow("BUSINESS_CLASS_PRICE"));
                 double extraBaggagePrice = cursor.getDouble(cursor.getColumnIndexOrThrow("EXTRA_BAGGAGE_PRICE"));
                 Flight.RecurrentType recurrent = Flight.RecurrentType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("RECURRENT")));
 
-                Flight flight = new Flight(flightNumber, departurePlace, destination, departureDate, departureTime,
-                        arrivalDate, arrivalTime, duration, aircraftModel, maxSeats,
-                        bookingOpenDate, economyClassPrice, businessClassPrice, extraBaggagePrice, recurrent);
+                Flight flight = new Flight( destination,  departureDate,  arrivalDate,
+                        duration,  flightNumber,  departurePlace,  departureTime,  arrivalTime,
+                        aircraftModel,  currentReservations,  maxSeats,  missedFlights,  bookingOpenDate,
+                        economyClassPrice ,businessClassPrice,extraBaggagePrice,recurrent);
                 flightList.add(flight);
+
+
 
             } while (cursor.moveToNext());
             cursor.close();
@@ -104,7 +109,9 @@ public class ViewFlightsNotAvailableFragment extends Fragment {
                 "Economy Class Price: " + flight.getEconomyClassPrice() + "\n" +
                 "Business Class Price: " + flight.getBusinessClassPrice() + "\n" +
                 "Extra Baggage Price: " + flight.getExtraBaggagePrice() + "\n" +
-                "Recurrent: " + flight.getRecurrent();
+                "Recurrent: " + flight.getRecurrent()+"\n" +
+                "Current Reservations: " + flight.getCurrentReservations()+"\n" +
+                "Missed Flights: " + flight.getMissedFlights();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Flight Details")

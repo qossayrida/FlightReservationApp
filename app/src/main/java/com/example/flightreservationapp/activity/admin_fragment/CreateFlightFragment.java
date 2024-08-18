@@ -26,10 +26,10 @@ import java.util.Date;
 
 public class CreateFlightFragment extends Fragment {
 
-    private EditText etFlightNumber, etDeparturePlace, etDestination, etDepartureDate,
+    private EditText etFlightNumber, etDepartureDate,
             etDepartureTime, etArrivalDate, etArrivalTime, etDuration, etAircraftModel, etMaxSeats,
             etBookingOpenDate, etPriceEconomy, etPriceBusiness, etPriceExtraBaggage;
-    private Spinner spinnerRecurrent;
+    private Spinner spDeparturePlace,spDestination ,spinnerRecurrent;
     private Button btnSubmit;
 
     @Nullable
@@ -38,8 +38,8 @@ public class CreateFlightFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_create_flight, container, false);
 
         etFlightNumber = view.findViewById(R.id.et_flight_number);
-        etDeparturePlace = view.findViewById(R.id.et_departure_place);
-        etDestination = view.findViewById(R.id.et_destination);
+        spDeparturePlace = view.findViewById(R.id.sp_departure_place);
+        spDestination = view.findViewById(R.id.sp_destination);
         etDepartureDate = view.findViewById(R.id.et_departure_date);
         etDepartureTime = view.findViewById(R.id.et_departure_time);
         etArrivalDate = view.findViewById(R.id.et_arrival_date);
@@ -60,8 +60,8 @@ public class CreateFlightFragment extends Fragment {
         btnSubmit.setOnClickListener(v -> {
             // Collect the data from input fields
             String flightNumber = etFlightNumber.getText().toString().trim();
-            String departurePlace = etDeparturePlace.getText().toString().trim();
-            String destination = etDestination.getText().toString().trim();
+            String departurePlace = spDeparturePlace.getSelectedItem().toString().trim();
+            String destination = spDestination.getSelectedItem().toString().trim();
             String departureDate = etDepartureDate.getText().toString().trim();
             String departureTime = etDepartureTime.getText().toString().trim();
             String arrivalDate = etArrivalDate.getText().toString().trim();
@@ -130,8 +130,8 @@ public class CreateFlightFragment extends Fragment {
 
     private void clearFields() {
         etFlightNumber.setText("");
-        etDeparturePlace.setText("");
-        etDestination.setText("");
+        spDeparturePlace.setSelection(0);
+        spDestination.setSelection(0);
         etDepartureDate.setText("");
         etDepartureTime.setText("");
         etArrivalDate.setText("");

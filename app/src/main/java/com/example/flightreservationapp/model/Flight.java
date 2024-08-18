@@ -52,11 +52,24 @@ public class Flight implements Serializable {
         this.recurrent = recurrent;
     }
 
-    public Flight(String flightNumber, String departurePlace, String destination,String aircraftModel) {
-        this.aircraftModel = aircraftModel;
+    public Flight(String destination, String departureDate, String arrivalDate, int duration, String flightNumber, String departurePlace, String departureTime, String arrivalTime, String aircraftModel, int currentReservations, int maxSeats, int missedFlights, String bookingOpenDate, double economyClassPrice, double businessClassPrice, double extraBaggagePrice, RecurrentType recurrent) {
+        this.destination = destination;
+        this.departureDate = departureDate;
+        this.arrivalDate = arrivalDate;
+        this.duration = duration;
         this.flightNumber = flightNumber;
         this.departurePlace = departurePlace;
-        this.destination = destination;
+        this.departureTime = departureTime;
+        this.arrivalTime = arrivalTime;
+        this.aircraftModel = aircraftModel;
+        this.currentReservations = currentReservations;
+        this.maxSeats = maxSeats;
+        this.missedFlights = missedFlights;
+        this.bookingOpenDate = bookingOpenDate;
+        this.economyClassPrice = economyClassPrice;
+        this.businessClassPrice = businessClassPrice;
+        this.extraBaggagePrice = extraBaggagePrice;
+        this.recurrent = recurrent;
     }
 
     // Getters and Setters
