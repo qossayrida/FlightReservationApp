@@ -16,7 +16,10 @@ import com.example.flightreservationapp.model.Flight;
 
 public class EditFlightDialogFragment extends DialogFragment {
 
-    private EditText etFlightNumber, etDeparturePlace, etDestination, etDepartureDate, etDepartureTime, etArrivalDate, etArrivalTime, etDuration;
+    private EditText etFlightNumber, etDeparturePlace, etDestination, etDepartureDate,
+            etDepartureTime, etArrivalDate, etArrivalTime, etDuration, etAircraftModel, etMaxSeats,
+            etBookingOpenDate, etPriceEconomy, etPriceBusiness, etPriceExtraBaggage;
+    private Spinner spinnerRecurrent;
     private Button btnUpdateFlight;
     private Flight flight;
     private OnFlightUpdatedListener flightUpdatedListener;
@@ -50,6 +53,7 @@ public class EditFlightDialogFragment extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_create_flight, container, false);
 
+        // Initialize views
         etFlightNumber = view.findViewById(R.id.et_flight_number);
         etDeparturePlace = view.findViewById(R.id.et_departure_place);
         etDestination = view.findViewById(R.id.et_destination);
@@ -58,8 +62,14 @@ public class EditFlightDialogFragment extends DialogFragment {
         etArrivalDate = view.findViewById(R.id.et_arrival_date);
         etArrivalTime = view.findViewById(R.id.et_arrival_time);
         etDuration = view.findViewById(R.id.et_duration);
+        etAircraftModel = view.findViewById(R.id.et_aircraft_model);
+        etMaxSeats = view.findViewById(R.id.et_max_seats);
+        etBookingOpenDate = view.findViewById(R.id.et_booking_open_date);
+        etPriceEconomy = view.findViewById(R.id.et_price_economy);
+        etPriceBusiness = view.findViewById(R.id.et_price_business);
+        etPriceExtraBaggage = view.findViewById(R.id.et_price_extra_baggage);
+        spinnerRecurrent = view.findViewById(R.id.spinner_recurrent);
         btnUpdateFlight = view.findViewById(R.id.btn_submit);
-
 
         // Populate fields with the current flight data
         if (flight != null) {
@@ -71,6 +81,18 @@ public class EditFlightDialogFragment extends DialogFragment {
             etArrivalDate.setText(flight.getArrivalDate());
             etArrivalTime.setText(flight.getArrivalTime());
             etDuration.setText(String.valueOf(flight.getDuration()));
+            etAircraftModel.setText(flight.getAircraftModel());
+            etMaxSeats.setText(String.valueOf(flight.getMaxSeats()));
+            etBookingOpenDate.setText(flight.getBookingOpenDate());
+            etPriceEconomy.setText(String.valueOf(flight.getEconomyClassPrice()));
+            etPriceBusiness.setText(String.valueOf(flight.getBusinessClassPrice()));
+            etPriceExtraBaggage.setText(String.valueOf(flight.getExtraBaggagePrice()));
+            if(flight.getRecurrent().equals(Flight.RecurrentType.NONE))
+                spinnerRecurrent.setSelection(0);
+            else if(flight.getRecurrent().equals(Flight.RecurrentType.DAILY))
+                spinnerRecurrent.setSelection(1);
+            else
+                spinnerRecurrent.setSelection(2);
 
 
             // Update button text to reflect edit mode
@@ -91,11 +113,19 @@ public class EditFlightDialogFragment extends DialogFragment {
         String arrivalDate = etArrivalDate.getText().toString().trim();
         String arrivalTime = etArrivalTime.getText().toString().trim();
         int duration = Integer.parseInt(etDuration.getText().toString().trim());
+        String aircraftModel = etAircraftModel.getText().toString().trim();
+        int maxSeats = Integer.parseInt(etMaxSeats.getText().toString().trim());
+        String bookingOpenDate = etBookingOpenDate.getText().toString().trim();
+        double priceEconomy = Double.parseDouble(etPriceEconomy.getText().toString().trim());
+        double priceBusiness = Double.parseDouble(etPriceBusiness.getText().toString().trim());
+        double priceExtraBaggage = Double.parseDouble(etPriceExtraBaggage.getText().toString().trim());
+        String recurrent = spinnerRecurrent.getSelectedItem().toString();
 
         DataBaseHelper dbHelper = new DataBaseHelper(getContext());
 
         boolean success = dbHelper.updateFlight(flight.getFlightNumber(), flightNumber, departurePlace, destination,
-                departureDate, departureTime, arrivalDate, arrivalTime, duration);
+                departureDate, departureTime, arrivalDate, arrivalTime, duration, aircraftModel, maxSeats,
+                bookingOpenDate, priceEconomy, priceBusiness, priceExtraBaggage, recurrent);
 
         if (success) {
             Toast.makeText(getContext(), "Flight updated successfully!", Toast.LENGTH_SHORT).show();

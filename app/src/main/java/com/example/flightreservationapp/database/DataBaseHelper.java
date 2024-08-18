@@ -235,7 +235,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
 
     public boolean updateFlight(String oldFlightNumber, String newFlightNumber, String departurePlace, String destination,
-                                String departureDate, String departureTime, String arrivalDate, String arrivalTime, int duration) {
+                                String departureDate, String departureTime, String arrivalDate, String arrivalTime,
+                                int duration, String aircraftModel, int maxSeats, String bookingOpenDate,
+                                double priceEconomy, double priceBusiness, double priceExtraBaggage, String recurrent) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
 
@@ -248,12 +250,20 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         values.put("ARRIVAL_DATE", arrivalDate);
         values.put("ARRIVAL_TIME", arrivalTime);
         values.put("DURATION", duration);
+        values.put("AIRCRAFT_MODEL", aircraftModel);
+        values.put("MAX_SEATS", maxSeats);
+        values.put("BOOKING_OPEN_DATE", bookingOpenDate);
+        values.put("ECONOMY_CLASS_PRICE", priceEconomy);
+        values.put("BUSINESS_CLASS_PRICE", priceBusiness);
+        values.put("EXTRA_BAGGAGE_PRICE", priceExtraBaggage);
+        values.put("RECURRENT", recurrent);
 
         // Execute the update operation and check the number of rows affected
         int rowsAffected = db.update("FLIGHTS", values, "FLIGHT_NUMBER = ?", new String[]{oldFlightNumber});
 
         return rowsAffected > 0;
     }
+
 
 
 
