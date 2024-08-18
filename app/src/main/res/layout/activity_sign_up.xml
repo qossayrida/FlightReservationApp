@@ -2,112 +2,303 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient_background"
     tools:context=".activity.SignUpActivity">
 
     <LinearLayout
+        android:id="@+id/mainLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="24dp"
+        android:background="@drawable/rounded_corner_bg">
 
+        <!-- Title: Sign In as Passenger -->
+        <TextView
+            android:id="@+id/titleLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sign In as Passenger"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/primaryColor"
+            android:gravity="center"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Email Label -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Email"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:paddingBottom="4dp"/>
+
+        <!-- Email -->
         <EditText
             android:id="@+id/emailEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Email" />
+            android:hint="Enter Email"
+            android:padding="12dp" />
 
+        <!-- Phone Label -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Phone"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:paddingTop="16dp"
+            android:paddingBottom="4dp"/>
+
+        <!-- Phone -->
         <EditText
             android:id="@+id/phoneEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Phone"
-            android:layout_marginTop="16dp" />
+            android:hint="Enter Phone Number"
+            android:padding="12dp" />
 
+        <!-- First Name Label -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="First Name"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:paddingTop="16dp"
+            android:paddingBottom="4dp"/>
+
+        <!-- First Name -->
         <EditText
             android:id="@+id/firstNameEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="First Name"
-            android:layout_marginTop="16dp" />
+            android:hint="Enter First Name" />
 
+        <!-- Last Name Label -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Last Name"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:paddingTop="16dp"
+            android:paddingBottom="4dp"/>
+
+        <!-- Last Name -->
         <EditText
             android:id="@+id/lastNameEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Last Name"
-            android:layout_marginTop="16dp" />
+            android:hint="Enter Last Name"
+            android:padding="12dp" />
 
+        <!-- Password Label -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Password"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:paddingTop="16dp"
+            android:paddingBottom="4dp"/>
+
+        <!-- Password -->
         <EditText
             android:id="@+id/passwordEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Password"
+            android:hint="Enter Password"
             android:inputType="textPassword"
-            android:layout_marginTop="16dp" />
+            android:padding="12dp" />
 
+        <!-- Confirm Password Label -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Confirm Password"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:paddingTop="16dp"
+            android:paddingBottom="4dp"/>
+
+        <!-- Confirm Password -->
         <EditText
             android:id="@+id/confirmPasswordEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Confirm Password"
             android:inputType="textPassword"
-            android:layout_marginTop="16dp" />
+            android:padding="12dp" />
 
+        <!-- Passport Number Label -->
+        <TextView
+            android:id="@+id/passportNumberLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Passport Number"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:paddingTop="16dp"
+            android:paddingBottom="4dp"/>
+
+        <!-- Passport Number -->
         <EditText
             android:id="@+id/passportNumberEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Passport Number"
-            android:layout_marginTop="16dp" />
+            android:hint="Enter Passport Number"
+            android:padding="12dp" />
 
+        <!-- Passport Issue Date Label -->
+        <TextView
+            android:id="@+id/passportIssueDateLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Passport Issue Date"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:paddingTop="16dp"
+            android:paddingBottom="4dp"/>
+
+        <!-- Passport Issue Date -->
         <EditText
             android:id="@+id/passportIssueDateEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Passport Issue Date"
-            android:layout_marginTop="16dp" />
+            android:hint="Enter Passport Issue Date"
+            android:padding="12dp"
+            android:focusable="false"
+            android:clickable="true"
+            android:inputType="none"/>
 
+        <!-- Passport Issue Place Label -->
+        <TextView
+            android:id="@+id/passportIssuePlaceLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Passport Issue Place"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:paddingTop="16dp"
+            android:paddingBottom="4dp"/>
+
+        <!-- Passport Issue Place -->
         <EditText
             android:id="@+id/passportIssuePlaceEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Passport Issue Place"
-            android:layout_marginTop="16dp" />
+            android:hint="Enter Passport Issue Place"
+            android:padding="12dp" />
 
+        <!-- Passport Expiration Date Label -->
+        <TextView
+            android:id="@+id/passportExpirationDateLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Passport Expiration Date"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:paddingTop="16dp"
+            android:paddingBottom="4dp"/>
+
+        <!-- Passport Expiration Date -->
         <EditText
             android:id="@+id/passportExpirationDateEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Passport Expiration Date"
-            android:layout_marginTop="16dp" />
+            android:hint="Enter Passport Expiration Date"
+            android:padding="12dp"
+            android:focusable="false"
+            android:clickable="true"
+            android:inputType="none"/>
 
+        <!-- Food Preference Label -->
+        <TextView
+            android:id="@+id/foodPreferenceLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Food Preference"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:paddingTop="16dp"
+            android:paddingBottom="4dp"/>
+
+        <!-- Food Preference -->
         <EditText
             android:id="@+id/foodPreferenceEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Food Preference"
-            android:layout_marginTop="16dp" />
+            android:hint="Enter Food Preference"
+            android:padding="12dp" />
 
+        <!-- Date of Birth Label -->
+        <TextView
+            android:id="@+id/dateOfBirthLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Date of Birth"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:paddingTop="16dp"
+            android:paddingBottom="4dp"/>
+
+        <!-- Date of Birth -->
         <EditText
             android:id="@+id/dateOfBirthEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Date of Birth"
-            android:layout_marginTop="16dp" />
+            android:hint="Enter Date of Birth"
+            android:padding="12dp"
+            android:focusable="false"
+            android:clickable="true"
+            android:inputType="none"/>
 
+        <!-- Nationality Label -->
+        <TextView
+            android:id="@+id/nationalityLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nationality"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:paddingTop="16dp"
+            android:paddingBottom="4dp"/>
+
+        <!-- Nationality -->
         <EditText
             android:id="@+id/nationalityEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Nationality"
-            android:layout_marginTop="16dp" />
+            android:hint="Enter Nationality"
+            android:padding="12dp" />
 
+        <!-- Sign Up Button -->
         <Button
             android:id="@+id/signUpButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Sign Up"
-            android:layout_marginTop="16dp" />
+            android:textColor="#FFFFFF"
+            android:layout_gravity="center"
+            android:layout_marginTop="24dp"
+            android:paddingVertical="12dp"
+            android:paddingHorizontal="24dp"/>
 
     </LinearLayout>
 </ScrollView>
