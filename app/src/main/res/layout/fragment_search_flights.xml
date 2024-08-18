@@ -5,26 +5,68 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- Departure City Label -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Departure City"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:paddingBottom="4dp"/>
+
     <!-- Departure City -->
     <EditText
         android:id="@+id/et_departure_city"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Departure City"/>
+        android:hint="Enter Departure City"/>
+
+    <!-- Arrival City Label -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Arrival City"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:paddingTop="8dp"
+        android:paddingBottom="4dp"/>
 
     <!-- Arrival City -->
     <EditText
         android:id="@+id/et_arrival_city"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Arrival City"/>
+        android:hint="Enter Arrival City"/>
+
+    <!-- Departure Date Label -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Departure Date"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:paddingTop="8dp"
+        android:paddingBottom="4dp"/>
 
     <!-- Departure Date -->
     <EditText
         android:id="@+id/et_departure_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Departure Date"/>
+        android:hint="Select Departure Date"
+        android:focusable="false"
+        android:clickable="true"
+        android:inputType="none"/>
+
+    <!-- One Way / Round Trip Label -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Trip Type"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:paddingTop="8dp"
+        android:paddingBottom="4dp"/>
 
     <!-- One Way / Round Trip -->
     <RadioGroup
@@ -36,7 +78,8 @@
             android:id="@+id/rb_one_way"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="One Way"/>
+            android:text="One Way"
+            android:checked="true"/>
         <RadioButton
             android:id="@+id/rb_round_trip"
             android:layout_width="wrap_content"
@@ -44,19 +87,45 @@
             android:text="Round Trip"/>
     </RadioGroup>
 
+    <!-- Return Date Label -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Return Date"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:paddingTop="8dp"
+        android:paddingBottom="4dp"
+        android:visibility="gone"
+        android:id="@+id/tv_return_date_label"/>
+
     <!-- Return Date -->
     <EditText
         android:id="@+id/et_return_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Return Date"
-        android:visibility="gone"/>
+        android:hint="Select Return Date"
+        android:visibility="gone"
+        android:focusable="false"
+        android:clickable="true"
+        android:inputType="none"/>
+
+    <!-- Sorting Label -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sort By"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:paddingTop="8dp"
+        android:paddingBottom="4dp"/>
 
     <!-- Sorting -->
     <Spinner
         android:id="@+id/sp_sorting"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:entries="@array/sorting_options"/>
 
     <!-- Search Button -->
@@ -64,13 +133,15 @@
         android:id="@+id/btn_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Search"/>
+        android:text="Search"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"/>
 
-
-
+    <!-- Flight Results ListView -->
     <ListView
         android:id="@+id/lv_flight_results"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="visible"/>
+
 </LinearLayout>

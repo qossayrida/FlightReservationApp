@@ -20,6 +20,13 @@
 
 
     <fragment
+        android:id="@+id/nav_view_current_reservations"
+        android:name="com.example.flightreservationapp.activity.passenger_fragment.ViewCurrentReservationsFragment"
+        android:label="@string/menu_view_current_reservations"
+        tools:layout="@layout/fragment_view_current_reservations" />
+
+
+    <fragment
         android:id="@+id/nav_view_previous_reservations"
         android:name="com.example.flightreservationapp.activity.passenger_fragment.ViewPreviousReservationsFragment"
         android:label="@string/menu_view_previous_reservations"

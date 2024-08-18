@@ -76,8 +76,11 @@ public class CreateFlightFragment extends Fragment {
 
             DatePickerDialog datePickerDialog = new DatePickerDialog(
                     getContext(),
-                    (view, year1, monthOfYear, dayOfMonth) ->
-                            editText.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year1),
+                    (view, year1, monthOfYear, dayOfMonth) -> {
+                        // Format the month and day to always be two digits
+                        String formattedDate = String.format("%04d-%02d-%02d", year1, monthOfYear + 1, dayOfMonth);
+                        editText.setText(formattedDate);
+                    },
                     year, month, day);
             datePickerDialog.show();
         });

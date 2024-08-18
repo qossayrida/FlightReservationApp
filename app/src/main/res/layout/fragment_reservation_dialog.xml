@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:elevation="4dp">
+
+    <TextView
+        android:id="@+id/tv_flight_details"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Confirm Your Reservation"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:layout_gravity="center"
+        android:textColor="@color/colorPrimary"
+        android:paddingBottom="16dp"/>
+
+    <!-- Flight Class Spinner -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select Flight Class"
+        android:textSize="16sp"
+        android:layout_marginTop="12dp"
+        android:paddingStart="4dp"
+        android:textColor="@color/colorAccent"/>
+
+    <Spinner
+        android:id="@+id/sp_flight_class"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:spinnerMode="dropdown"
+        android:backgroundTint="@color/colorPrimary"
+        android:entries="@array/flight_class_options"/>
+
+    <!-- Extra Bags Input -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Number of Extra Bags"
+        android:textSize="16sp"
+        android:paddingStart="4dp"
+        android:textColor="@color/colorAccent"/>
+
+    <EditText
+        android:id="@+id/et_extra_bags"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="0"
+        android:inputType="number"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:padding="12dp"
+        android:textSize="14sp"/>
+
+    <!-- Confirm Reservation Button -->
+    <Button
+        android:id="@+id/btn_confirm_reservation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Confirm Reservation"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:layout_marginTop="24dp"
+        android:padding="12dp"/>
+
+</LinearLayout>

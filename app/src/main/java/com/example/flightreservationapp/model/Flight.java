@@ -1,8 +1,9 @@
 package com.example.flightreservationapp.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Flight{
+public class Flight implements Serializable {
     private String flightNumber;
     private String departurePlace;
     private String destination;

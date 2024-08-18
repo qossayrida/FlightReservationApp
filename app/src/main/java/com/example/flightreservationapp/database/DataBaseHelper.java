@@ -169,5 +169,58 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return db.rawQuery(query, new String[]{passportNumber, currentDate});
     }
 
+    public Cursor getCurrentReservationsForUser(String passportNumber) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        // Get current date in the format yyyy-MM-dd
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String currentDate = dateFormat.format(new Date());
+
+        // Query to find all reservations for the given passport number with departure date greater than or equal to the current date
+        String query = "SELECT * FROM RESERVATIONS " +
+                "JOIN FLIGHTS ON RESERVATIONS.FLIGHT_NUMBER = FLIGHTS.FLIGHT_NUMBER " +
+                "WHERE RESERVATIONS.PASSPORT_NUMBER = ? " +
+                "AND FLIGHTS.DEPARTURE_DATE >= ?";
+
+        return db.rawQuery(query, new String[]{passportNumber, currentDate});
+    }
+
+    public boolean deleteReservation(String reservationId) {
+        SQLiteDatabase db = getWritableDatabase();
+        int rowsDeleted = db.delete("RESERVATIONS", "RESERVATION_ID = ?", new String[]{reservationId});
+
+        // Check if any rows were deleted
+        return rowsDeleted > 0;
+    }
+
+    public Cursor getFlightDetailsByFlightNumber(String flightNumber) {
+        SQLiteDatabase db = getReadableDatabase();
+        return db.rawQuery("SELECT * FROM FLIGHTS WHERE FLIGHT_NUMBER = ?", new String[]{flightNumber});
+    }
+
+    public void updateReservation(String reservationId, String flightClass, int extraBags, double totalCost) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("FLIGHT_CLASS", flightClass);
+        values.put("EXTRA_BAGS", extraBags);
+        values.put("TOTAL_COST", totalCost);
+
+        db.update("RESERVATIONS", values, "RESERVATION_ID = ?", new String[]{reservationId});
+    }
+
+
+
+
+    public void insertReservation(String reservationId, String passportNumber, String flightNumber, String flightClass, int extraBags, double totalCost) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("RESERVATION_ID", reservationId);
+        values.put("PASSPORT_NUMBER", passportNumber);
+        values.put("FLIGHT_NUMBER", flightNumber);
+        values.put("FLIGHT_CLASS", flightClass);
+        values.put("EXTRA_BAGS", extraBags);
+        values.put("TOTAL_COST", totalCost);
+        db.insert("RESERVATIONS", null, values);
+    }
 
 }

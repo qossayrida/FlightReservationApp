@@ -1,7 +1,9 @@
 package com.example.flightreservationapp.model;
 
 
-public class Reservation {
+import java.io.Serializable;
+
+public class Reservation implements Serializable{
 
     private String reservationId;
     private String passportNumber;

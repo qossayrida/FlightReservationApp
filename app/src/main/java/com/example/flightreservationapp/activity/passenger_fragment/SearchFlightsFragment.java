@@ -1,6 +1,7 @@
 package com.example.flightreservationapp.activity.passenger_fragment;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -17,20 +18,26 @@ import androidx.fragment.app.Fragment;
 import com.example.flightreservationapp.R;
 import com.example.flightreservationapp.database.DataBaseHelper;
 import com.example.flightreservationapp.model.Flight;
+import com.example.flightreservationapp.model.User;
 import com.example.flightreservationapp.utility.FlightAdapter;
+import com.example.flightreservationapp.utility.JsonConverter;
+import com.example.flightreservationapp.utility.SharedPrefManager;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 public class SearchFlightsFragment extends Fragment {
 
     private EditText etDepartureCity, etArrivalCity, etDepartureDate, etReturnDate;
+    private TextView tvReturnDateLabel;
     private RadioGroup rgTripType;
     private Spinner spSorting;
     private Button btnSearch;
     private ListView lvFlightResults;
     private DataBaseHelper dbHelper;
     private ArrayList<Flight> flightList;
+    private User savedUser = null;
 
     @Nullable
     @Override
@@ -41,10 +48,14 @@ public class SearchFlightsFragment extends Fragment {
         etArrivalCity = view.findViewById(R.id.et_arrival_city);
         etDepartureDate = view.findViewById(R.id.et_departure_date);
         etReturnDate = view.findViewById(R.id.et_return_date);
+        tvReturnDateLabel = view.findViewById(R.id.tv_return_date_label);
         rgTripType = view.findViewById(R.id.rg_trip_type);
         spSorting = view.findViewById(R.id.sp_sorting);
         btnSearch = view.findViewById(R.id.btn_search);
         lvFlightResults = view.findViewById(R.id.lv_flight_results);
+
+        setDatePicker(etDepartureDate);
+        setDatePicker(etReturnDate);
 
         dbHelper = new DataBaseHelper(getContext());
         flightList = new ArrayList<>();
@@ -53,12 +64,21 @@ public class SearchFlightsFragment extends Fragment {
         rgTripType.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == R.id.rb_round_trip) {
                 etReturnDate.setVisibility(View.VISIBLE);
+                tvReturnDateLabel.setVisibility(View.VISIBLE);
             } else {
                 etReturnDate.setVisibility(View.GONE);
+                tvReturnDateLabel.setVisibility(View.GONE);
             }
         });
 
         btnSearch.setOnClickListener(v -> searchFlights());
+
+        // Fetch the current user from shared preferences
+        SharedPrefManager sharedPrefManager = SharedPrefManager.getInstance(requireContext());
+        String savedUserJson = sharedPrefManager.readString("userJson", null);
+        if (savedUserJson != null)
+            savedUser = JsonConverter.jsonToUser(savedUserJson);
+
 
         return view;
     }
@@ -70,6 +90,11 @@ public class SearchFlightsFragment extends Fragment {
         String returnDate = etReturnDate.getText().toString().trim();
         String sortingOption = spSorting.getSelectedItem().toString();
 
+        int selectedTripType = rgTripType.getCheckedRadioButtonId();
+        if (selectedTripType == R.id.rb_one_way) {
+            returnDate = "";
+        }
+
         if (TextUtils.isEmpty(departureCity) || TextUtils.isEmpty(arrivalCity) || TextUtils.isEmpty(departureDate)) {
             Toast.makeText(getContext(), "Please fill in all required fields", Toast.LENGTH_SHORT).show();
             return;
@@ -79,7 +104,7 @@ public class SearchFlightsFragment extends Fragment {
         Cursor cursor = dbHelper.searchFlights(departureCity, arrivalCity, departureDate, returnDate, sortingOption);
 
         if (cursor != null && cursor.moveToFirst()) {
-            flightList.clear();
+            flightList.clear(); // Clear the list before adding new results
 
             do {
                 String flightNumber = cursor.getString(cursor.getColumnIndexOrThrow("FLIGHT_NUMBER"));
@@ -112,11 +137,19 @@ public class SearchFlightsFragment extends Fragment {
 
             lvFlightResults.setOnItemClickListener((parent, view, position, id) -> showFlightDetailsDialog(flightList.get(position)));
         } else {
+            flightList.clear(); // Clear the list if no results are found
             Toast.makeText(getContext(), "No flights found for the specified criteria", Toast.LENGTH_SHORT).show();
+
+            // Update the ListView to reflect the cleared list
+            FlightAdapter adapter = new FlightAdapter(getContext(), flightList);
+            lvFlightResults.setAdapter(adapter);
         }
     }
 
+
     private void showFlightDetailsDialog(Flight flight) {
+
+
         String flightDetails = "Flight Number: " + flight.getFlightNumber() + "\n" +
                 "Departure Place: " + flight.getDeparturePlace() + "\n" +
                 "Destination: " + flight.getDestination() + "\n" +
@@ -136,12 +169,37 @@ public class SearchFlightsFragment extends Fragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Flight Details")
                 .setMessage(flightDetails)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+                .setPositiveButton("Make Reservation", (dialog, which) -> {
+                    // Trigger the reservation process for the selected flight
+                    makeReservation(flight);
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+
         builder.show();
     }
+
+    private void makeReservation(Flight flight) {
+        ReservationDialogFragment reservationDialogFragment = ReservationDialogFragment.newInstance(flight,savedUser,false,null);
+        reservationDialogFragment.show(getParentFragmentManager(), "reservationDialog");
+    }
+
+    private void setDatePicker(EditText editText) {
+        editText.setOnClickListener(v -> {
+            final Calendar c = Calendar.getInstance();
+            int year = c.get(Calendar.YEAR);
+            int month = c.get(Calendar.MONTH);
+            int day = c.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(
+                    getContext(),
+                    (view, year1, monthOfYear, dayOfMonth) -> {
+                        // Format the month and day to always be two digits
+                        String formattedDate = String.format("%04d-%02d-%02d", year1, monthOfYear + 1, dayOfMonth);
+                        editText.setText(formattedDate);
+                    },
+                    year, month, day);
+            datePickerDialog.show();
+        });
+    }
+
 }

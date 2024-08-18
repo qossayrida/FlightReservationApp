@@ -22,6 +22,7 @@
     <string name="menu_home">Home</string>
     <string name="menu_search_flights">Search Flights</string>
     <string name="menu_view_previous_reservations">View Previous Reservations</string>
+    <string name="menu_view_current_reservations">View Current Reservations</string>
     <string name="menu_create_flight">Create Flight</string>
     <string name="menu_view_all_reservations">View Reservations</string>
     <string name="menu_view_flight_not_available">View Flight Not Available</string>
@@ -42,5 +43,11 @@
         <item>Lowest Cost</item>
         <item>Shortest Duration</item>
     </string-array>
+
+    <string-array name="flight_class_options">
+        <item>Economy</item>
+        <item>Business</item>
+    </string-array>
+
 
 </resources>
