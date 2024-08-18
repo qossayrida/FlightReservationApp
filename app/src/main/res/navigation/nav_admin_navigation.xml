@@ -18,10 +18,10 @@
         tools:layout="@layout/fragment_passenger_home" />
 
     <fragment
-        android:id="@+id/nav_view_flights"
-        android:name="com.example.flightreservationapp.activity.admin_fragment.ViewFlightsFragment"
-        android:label="@string/menu_view_flight"
-        tools:layout="@layout/fragment_view_flights" />
+        android:id="@+id/nav_view_flights_available"
+        android:name="com.example.flightreservationapp.activity.admin_fragment.ViewFlightsAvailableFragment"
+        android:label="@string/menu_view_flight_available"
+        tools:layout="@layout/fragment_view_flights_available" />
 
     <fragment
         android:id="@+id/nav_create_flight"
@@ -37,6 +37,12 @@
         tools:layout="@layout/fragment_view_flights_not_available" />
 
     <fragment
+        android:id="@+id/nav_view_flights_archive"
+        android:name="com.example.flightreservationapp.activity.admin_fragment.ViewFlightsArchiveFragment"
+        android:label="@string/menu_view_flight_archive"
+        tools:layout="@layout/fragment_view_flights_archive" />
+
+    <fragment
         android:id="@+id/nav_edit_or_remove_flight"
         android:name="com.example.flightreservationapp.activity.admin_fragment.EditOrRemoveFlightFragment"
         android:label="@string/menu_edit_or_remove_flight"
@@ -47,6 +53,8 @@
         android:name="com.example.flightreservationapp.activity.admin_fragment.ViewAllReservationsFragment"
         android:label="@string/menu_view_all_reservations"
         tools:layout="@layout/fragment_view_all_reservations" />
+
+
 
 
     <fragment

@@ -20,9 +20,8 @@ import com.example.flightreservationapp.model.Flight;
 import com.example.flightreservationapp.utility.FlightAdapter;
 
 import java.util.ArrayList;
-import java.util.Date;
 
-public class ViewFlightsFragment extends Fragment {
+public class ViewFlightsAvailableFragment extends Fragment {
 
     private ListView lvOpenFlights;
     private DataBaseHelper dbHelper;
@@ -31,7 +30,7 @@ public class ViewFlightsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_view_flights, container, false);
+        View view = inflater.inflate(R.layout.fragment_view_flights_available, container, false);
 
         lvOpenFlights = view.findViewById(R.id.lv_open_flights);
         dbHelper = new DataBaseHelper(getContext());

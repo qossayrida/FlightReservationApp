@@ -4,7 +4,6 @@ package com.example.flightreservationapp.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.flightreservationapp.model.*;
@@ -64,8 +63,8 @@ public class NavigationDrawerActivity extends AppCompatActivity {
             navigationView.inflateMenu(R.menu.activity_admin_drawer);
 
             mAppBarConfiguration = new AppBarConfiguration.Builder(
-                    R.id.nav_admin_home, R.id.nav_create_flight, R.id.nav_edit_or_remove_flight, R.id.nav_view_flights,
-                    R.id.nav_view_flights_not_available,R.id.nav_view_all_reservations,R.id.nav_filter_flight)
+                    R.id.nav_admin_home, R.id.nav_create_flight, R.id.nav_edit_or_remove_flight, R.id.nav_view_flights_available,
+                    R.id.nav_view_flights_not_available,R.id.nav_view_all_reservations,R.id.nav_view_flights_archive,R.id.nav_filter_flight)
                     .setOpenableLayout(drawer)
                     .build();
         } else if (savedUser != null && savedUser.getRole().equals("Passenger")) {

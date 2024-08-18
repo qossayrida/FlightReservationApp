@@ -265,20 +265,42 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
 
 
-
-
     public void insertReservation(String reservationId, String passportNumber, String flightNumber, String flightClass, int extraBags, double totalCost) {
         SQLiteDatabase db = getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("RESERVATION_ID", reservationId);
-        values.put("PASSPORT_NUMBER", passportNumber);
-        values.put("FLIGHT_NUMBER", flightNumber);
-        values.put("FLIGHT_CLASS", flightClass);
-        values.put("EXTRA_BAGS", extraBags);
-        values.put("TOTAL_COST", totalCost);
-        db.insert("RESERVATIONS", null, values);
+        db.beginTransaction(); // Start a transaction for atomic operation
 
-        // increment CURRENT_RESERVATIONS
+        try {
+            // Insert the reservation
+            ContentValues values = new ContentValues();
+            values.put("RESERVATION_ID", reservationId);
+            values.put("PASSPORT_NUMBER", passportNumber);
+            values.put("FLIGHT_NUMBER", flightNumber);
+            values.put("FLIGHT_CLASS", flightClass);
+            values.put("EXTRA_BAGS", extraBags);
+            values.put("TOTAL_COST", totalCost);
+            db.insert("RESERVATIONS", null, values);
+
+            // Increment CURRENT_RESERVATIONS
+            Cursor cursor = db.rawQuery("SELECT CURRENT_RESERVATIONS FROM FLIGHTS WHERE FLIGHT_NUMBER = ?", new String[]{flightNumber});
+            if (cursor.moveToFirst()) {
+                int currentReservations = cursor.getInt(cursor.getColumnIndexOrThrow("CURRENT_RESERVATIONS"));
+                currentReservations++; // Increment the value
+
+                ContentValues flightValues = new ContentValues();
+                flightValues.put("CURRENT_RESERVATIONS", currentReservations);
+
+                // Update the flight's CURRENT_RESERVATIONS
+                db.update("FLIGHTS", flightValues, "FLIGHT_NUMBER = ?", new String[]{flightNumber});
+            }
+            cursor.close();
+
+            db.setTransactionSuccessful(); // Commit the transaction
+        } catch (Exception e) {
+            Log.e("DatabaseError", "Error inserting reservation", e);
+        } finally {
+            db.endTransaction(); // End the transaction
+        }
     }
+
 
 }
