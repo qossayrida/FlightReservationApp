@@ -25,6 +25,7 @@
     <string name="menu_view_current_reservations">View Current Reservations</string>
     <string name="menu_create_flight">Create Flight</string>
     <string name="menu_view_all_reservations">View Reservations</string>
+    <string name="menu_filter_flight">Flight Filter</string>
     <string name="menu_view_flight_not_available">View Flight Not Available</string>
     <string name="menu_view_flight">View Flight</string>
     <string name="menu_edit_or_remove_flight">Edit Or Remove Flight</string>
@@ -48,7 +49,6 @@
         <item>Economy</item>
         <item>Business</item>
     </string-array>
-
 
 
     <string-array name="city_list">

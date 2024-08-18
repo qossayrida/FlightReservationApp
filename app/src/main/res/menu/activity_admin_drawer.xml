@@ -36,6 +36,10 @@
             android:icon="@drawable/ic_ticket"
             android:title="@string/menu_view_all_reservations" />
 
+        <item
+            android:id="@+id/nav_filter_flight"
+            android:icon="@drawable/ic_filter"
+            android:title="@string/menu_filter_flight" />
 
         <item
             android:id="@+id/nav_logout"

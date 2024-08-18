@@ -64,7 +64,8 @@ public class NavigationDrawerActivity extends AppCompatActivity {
             navigationView.inflateMenu(R.menu.activity_admin_drawer);
 
             mAppBarConfiguration = new AppBarConfiguration.Builder(
-                    R.id.nav_admin_home, R.id.nav_create_flight, R.id.nav_edit_or_remove_flight, R.id.nav_view_flights, R.id.nav_view_flights_not_available,R.id.nav_view_all_reservations)
+                    R.id.nav_admin_home, R.id.nav_create_flight, R.id.nav_edit_or_remove_flight, R.id.nav_view_flights,
+                    R.id.nav_view_flights_not_available,R.id.nav_view_all_reservations,R.id.nav_filter_flight)
                     .setOpenableLayout(drawer)
                     .build();
         } else if (savedUser != null && savedUser.getRole().equals("Passenger")) {
