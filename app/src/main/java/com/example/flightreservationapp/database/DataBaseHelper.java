@@ -303,4 +303,17 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
 
 
+    public Cursor getClosestFiveFlights() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String currentDate = dateFormat.format(new Date());
+
+        // Query to get the five flights with the closest departure dates greater than the current date
+        String query = "SELECT * FROM FLIGHTS WHERE DEPARTURE_DATE > ? " +
+                "ORDER BY DEPARTURE_DATE ASC " +
+                "LIMIT 5";
+
+        return db.rawQuery(query, new String[]{currentDate});
+    }
+
 }
