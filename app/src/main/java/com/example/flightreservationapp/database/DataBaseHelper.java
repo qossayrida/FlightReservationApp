@@ -118,18 +118,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.delete("FLIGHTS", "FLIGHT_NUMBER = ?", new String[]{flightNumber});
     }
 
-    public Cursor getFlightsNotOpenForReservation() {
-        SQLiteDatabase db = getReadableDatabase();
-
-        // Get current date in the format yyyy-MM-dd
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        String currentDate = dateFormat.format(new Date());
-
-        return db.rawQuery("SELECT * FROM FLIGHTS WHERE BOOKING_OPEN_DATE > ?", new String[]{currentDate});
-    }
-
-
-
     public Cursor searchFlights(String departureCity, String arrivalCity, String departureDate, String sortingOption, String passportNumber) {
         SQLiteDatabase db = this.getReadableDatabase();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -315,5 +303,53 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
         return db.rawQuery(query, new String[]{currentDate});
     }
+
+
+    public Cursor getArchive() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String currentDate = dateFormat.format(new Date());
+        // Query to retrieve flights and their corresponding reservations where the flight has already occurred
+        String query = "SELECT *" +
+                "FROM FLIGHTS FL " +
+                "WHERE FL.DEPARTURE_DATE <?";
+
+        // Execute the query and return the Cursor containing the result set
+        return db.rawQuery(query, new String[]{currentDate});
+    }
+
+    public Cursor getUpcomingFlights() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String currentDate = dateFormat.format(new Date());
+
+        // Query to retrieve flights where the booking open date is in the future
+        String query = "SELECT * " +
+                "FROM FLIGHTS " +
+                "WHERE BOOKING_OPEN_DATE > ?";
+
+        // Execute the query and return the Cursor containing the result set
+        return db.rawQuery(query, new String[]{currentDate});
+    }
+
+
+    public Cursor getAvailableFlights() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String currentDate = dateFormat.format(new Date());
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // Query to retrieve flights where the booking open date has arrived,
+        // the departure date is in the future, and the flight is not fully booked
+        String query = "SELECT * " +
+                "FROM FLIGHTS " +
+                "WHERE BOOKING_OPEN_DATE <= ? " + // Booking is open
+                "AND DEPARTURE_DATE > ? " +       // Flight hasn't departed yet
+                "AND CURRENT_RESERVATIONS < MAX_SEATS";     // Flight is not fully booked
+
+        // Execute the query and return the Cursor containing the result set
+        return db.rawQuery(query, new String[]{currentDate,currentDate});
+    }
+
 
 }

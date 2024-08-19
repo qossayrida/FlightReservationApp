@@ -51,7 +51,7 @@ public class ViewFlightsArchiveFragment extends Fragment {
     }
 
     private void loadOpenFlights() {
-        Cursor cursor = dbHelper.getAllFlights();
+        Cursor cursor = dbHelper.getArchive();
         archiveFlightList.clear();
 
         if (cursor != null && cursor.moveToFirst()) {

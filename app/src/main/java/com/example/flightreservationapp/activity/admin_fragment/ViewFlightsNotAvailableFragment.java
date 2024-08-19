@@ -51,7 +51,7 @@ public class ViewFlightsNotAvailableFragment extends Fragment {
     }
 
     private void loadFlightsNotOpenForReservation() {
-        Cursor cursor = dbHelper.getFlightsNotOpenForReservation();
+        Cursor cursor = dbHelper.getUpcomingFlights();
         flightList.clear();
 
         if (cursor != null && cursor.moveToFirst()) {

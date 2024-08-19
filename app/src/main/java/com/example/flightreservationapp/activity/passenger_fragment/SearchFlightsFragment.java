@@ -22,8 +22,11 @@ import com.example.flightreservationapp.utility.FlightAdapter;
 import com.example.flightreservationapp.utility.JsonConverter;
 import com.example.flightreservationapp.utility.SharedPrefManager;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 public class SearchFlightsFragment extends Fragment {
 
@@ -287,11 +290,60 @@ public class SearchFlightsFragment extends Fragment {
                     (view, year1, monthOfYear, dayOfMonth) -> {
                         // Format the month and day to always be two digits
                         String formattedDate = String.format("%04d-%02d-%02d", year1, monthOfYear + 1, dayOfMonth);
+
+                        // Validate against etDepartureDate
+                        if (editText == etDepartureDate) {
+                            if (!isDateValid(formattedDate)) {
+                                Toast.makeText(getContext(), "Date cannot be earlier than today", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                        }
+
+                        // Validate arrival date against departure date
+                        if (editText == etReturnDate) {
+                            String departureDate = etDepartureDate.getText().toString().trim();
+                            if (!departureDate.isEmpty() && !isReturnDateValid(departureDate, formattedDate)) {
+                                Toast.makeText(getContext(), "Arrival date must be later than departure date", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                        }
+
+                        // Validate departure date against arrival date
+                        if (editText == etDepartureDate) {
+                            String arrivalDate = etReturnDate.getText().toString().trim();
+                            if (!arrivalDate.isEmpty() && !isReturnDateValid(formattedDate, arrivalDate)) {
+                                Toast.makeText(getContext(), "Departure date cannot be later than arrival date", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                        }
                         editText.setText(formattedDate);
                     },
                     year, month, day);
             datePickerDialog.show();
         });
+    }
+
+
+    private boolean isDateValid(String selectedDate) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date date = format.parse(selectedDate);
+            Date currentDate = new Date();
+            return !date.before(currentDate); // Date should not be before today
+        } catch (ParseException e) {
+            return false;
+        }
+    }
+
+    private boolean isReturnDateValid(String departureDate, String returnDate){
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date depDate = format.parse(departureDate);
+            Date arrDate = format.parse(returnDate);
+            return !arrDate.before(depDate); // Return date should not be before departure date
+        } catch (ParseException e) {
+            return false;
+        }
     }
 
 }

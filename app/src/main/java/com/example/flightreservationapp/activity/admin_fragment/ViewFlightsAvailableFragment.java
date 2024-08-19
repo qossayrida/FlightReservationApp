@@ -52,7 +52,7 @@ public class ViewFlightsAvailableFragment extends Fragment {
     }
 
     private void loadOpenFlights() {
-        Cursor cursor = dbHelper.getAllFlights();
+        Cursor cursor = dbHelper.getAvailableFlights();
         openFlightList.clear();
 
         if (cursor != null && cursor.moveToFirst()) {

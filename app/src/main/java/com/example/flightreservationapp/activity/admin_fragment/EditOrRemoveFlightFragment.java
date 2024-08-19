@@ -118,6 +118,12 @@ public class EditOrRemoveFlightFragment extends Fragment {
         adapter = new FlightAdapter(getContext(), filteredList);
         lvFlights.setAdapter(adapter);
 
+
+        lvFlights.setOnItemClickListener((parent, view1, position, id) -> {
+            Flight selectedFlight = filteredList.get(position);
+            showOptionsDialog(selectedFlight);
+        });
+
         if (filteredList.isEmpty()) {
             Toast.makeText(getContext(), "No flights match your search", Toast.LENGTH_SHORT).show();
         }

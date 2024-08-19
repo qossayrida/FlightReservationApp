@@ -168,7 +168,12 @@
             android:layout_height="wrap_content"
             android:hint="Enter Duration (e.g., 2h 30m)"
             android:padding="12dp"
-            android:inputType="number" />
+            android:inputType="number"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:clickable="false"
+            android:cursorVisible="false"
+            android:longClickable="false"/>
 
         <!-- Aircraft Model Label -->
         <TextView

@@ -116,7 +116,6 @@ public class CreateFlightFragment extends Fragment {
 
             if (result != -1) {
                 Toast.makeText(getContext(), "Flight created successfully", Toast.LENGTH_SHORT).show();
-                // Optionally, clear the fields after successful creation
                 clearFields();
             } else {
                 Toast.makeText(getContext(), "Failed to create flight", Toast.LENGTH_SHORT).show();
@@ -166,6 +165,49 @@ public class CreateFlightFragment extends Fragment {
                     (view, year1, monthOfYear, dayOfMonth) -> {
                         // Format the month and day to always be two digits
                         String formattedDate = String.format("%04d-%02d-%02d", year1, monthOfYear + 1, dayOfMonth);
+
+                        // Validate against current date for etBookingOpenDate and etDepartureDate
+                        if (editText == etBookingOpenDate || editText == etDepartureDate) {
+                            if (!isDateValid(formattedDate)) {
+                                Toast.makeText(getContext(), "Date cannot be earlier than today", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                        }
+
+                        // Validate booking open date against departure date
+                        if (editText == etBookingOpenDate) {
+                            String departureDate = etDepartureDate.getText().toString().trim();
+                            if (!departureDate.isEmpty() && !isBookingOpenDateValid(formattedDate, departureDate)) {
+                                Toast.makeText(getContext(), "Booking open date must be on or before the departure date", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                        }
+
+                        // Validate arrival date against departure date
+                        if (editText == etArrivalDate) {
+                            String departureDate = etDepartureDate.getText().toString().trim();
+                            if (!departureDate.isEmpty() && !isArrivalDateValid(departureDate, formattedDate)) {
+                                Toast.makeText(getContext(), "Arrival date must be later than departure date", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                        }
+
+                        // Validate departure date against arrival date
+                        if (editText == etDepartureDate) {
+                            String arrivalDate = etArrivalDate.getText().toString().trim();
+                            if (!arrivalDate.isEmpty() && !isArrivalDateValid(formattedDate, arrivalDate)) {
+                                Toast.makeText(getContext(), "Departure date cannot be later than arrival date", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+
+                            // Also validate against booking open date
+                            String bookingOpenDate = etBookingOpenDate.getText().toString().trim();
+                            if (!bookingOpenDate.isEmpty() && !isBookingOpenDateValid(bookingOpenDate, formattedDate)) {
+                                Toast.makeText(getContext(), "Departure date cannot be earlier than the booking open date", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                        }
+
                         editText.setText(formattedDate);
 
                         // After the date is set, calculate the duration
@@ -184,8 +226,42 @@ public class CreateFlightFragment extends Fragment {
                         }
                     },
                     year, month, day);
+            datePickerDialog.getDatePicker().setMinDate(c.getTimeInMillis()); // Set minimum date to current date
             datePickerDialog.show();
         });
+    }
+
+    private boolean isDateValid(String selectedDate) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date date = format.parse(selectedDate);
+            Date currentDate = new Date();
+            return !date.before(currentDate); // Date should not be before today
+        } catch (ParseException e) {
+            return false;
+        }
+    }
+
+    private boolean isArrivalDateValid(String departureDate, String arrivalDate) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date depDate = format.parse(departureDate);
+            Date arrDate = format.parse(arrivalDate);
+            return !arrDate.before(depDate); // Arrival date should not be before departure date
+        } catch (ParseException e) {
+            return false;
+        }
+    }
+
+    private boolean isBookingOpenDateValid(String bookingOpenDate, String departureDate) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date bookOpenDate = format.parse(bookingOpenDate);
+            Date depDate = format.parse(departureDate);
+            return !bookOpenDate.after(depDate); // Booking open date should not be after departure date
+        } catch (ParseException e) {
+            return false;
+        }
     }
 
     private void setTimePicker(EditText editText) {
@@ -199,8 +275,23 @@ public class CreateFlightFragment extends Fragment {
                     (view, hourOfDay, minute1) -> {
                         // Format the time to always be two digits
                         String formattedTime = String.format("%02d:%02d", hourOfDay, minute1);
-                        editText.setText(formattedTime);
 
+
+
+                        // Additional check if the departure and arrival dates are the same
+                        if (editText == etArrivalTime) {
+                            String departureDate = etDepartureDate.getText().toString().trim();
+                            String arrivalDate = etArrivalDate.getText().toString().trim();
+                            String departureTime = etDepartureTime.getText().toString().trim();
+                            if (!departureDate.isEmpty() && !arrivalDate.isEmpty() && departureDate.equals(arrivalDate)) {
+                                if (!departureTime.isEmpty() && !isArrivalTimeValid(departureTime, formattedTime)) {
+                                    Toast.makeText(getContext(), "Arrival time must be later than departure time", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                            }
+                        }
+
+                        editText.setText(formattedTime);
                         // After the time is set, calculate the duration
                         int duration = calculateDuration(
                                 etDepartureDate.getText().toString().trim(),
@@ -239,5 +330,16 @@ public class CreateFlightFragment extends Fragment {
         }
     }
 
+    private boolean isArrivalTimeValid(String departureTime, String arrivalTime) {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        try {
+            Date depTime = sdf.parse(departureTime);
+            Date arrTime = sdf.parse(arrivalTime);
+            return !arrTime.before(depTime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
 }
