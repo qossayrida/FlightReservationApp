@@ -3,9 +3,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- Search input field -->
+    <EditText
+        android:id="@+id/et_search_flight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Search Flight by Name"
+        android:padding="15dp"
+        android:inputType="text" />
+
     <ListView
         android:id="@+id/lv_flights"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@id/et_search_flight"
+        android:padding="16dp" />
 
 </RelativeLayout>

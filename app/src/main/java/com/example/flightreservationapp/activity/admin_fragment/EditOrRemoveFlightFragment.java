@@ -2,10 +2,12 @@ package com.example.flightreservationapp.activity.admin_fragment;
 
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -22,8 +24,10 @@ import java.util.ArrayList;
 public class EditOrRemoveFlightFragment extends Fragment {
 
     private ListView lvFlights;
+    private EditText etSearchFlight;
     private DataBaseHelper dbHelper;
     private ArrayList<Flight> flightList;
+    private FlightAdapter adapter;
 
     @Nullable
     @Override
@@ -31,6 +35,7 @@ public class EditOrRemoveFlightFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_edit_or_remove_flight, container, false);
 
         lvFlights = view.findViewById(R.id.lv_flights);
+        etSearchFlight = view.findViewById(R.id.et_search_flight);
         dbHelper = new DataBaseHelper(getContext());
         flightList = new ArrayList<>();
 
@@ -41,6 +46,24 @@ public class EditOrRemoveFlightFragment extends Fragment {
         lvFlights.setOnItemClickListener((parent, view1, position, id) -> {
             Flight selectedFlight = flightList.get(position);
             showOptionsDialog(selectedFlight);
+        });
+
+        // Set up a text watcher to filter the flight list based on the search input
+        etSearchFlight.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // No action needed here
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterFlights(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // No action needed here
+            }
         });
 
         return view;
@@ -70,20 +93,35 @@ public class EditOrRemoveFlightFragment extends Fragment {
                 double extraBaggagePrice = cursor.getDouble(cursor.getColumnIndexOrThrow("EXTRA_BAGGAGE_PRICE"));
                 Flight.RecurrentType recurrent = Flight.RecurrentType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("RECURRENT")));
 
-                Flight flight = new Flight( destination,  departureDate,  arrivalDate,
-                        duration,  flightNumber,  departurePlace,  departureTime,  arrivalTime,
-                        aircraftModel,  currentReservations,  maxSeats,  missedFlights,  bookingOpenDate,
-                        economyClassPrice ,businessClassPrice,extraBaggagePrice,recurrent);
+                Flight flight = new Flight(destination, departureDate, arrivalDate, duration, flightNumber,
+                        departurePlace, departureTime, arrivalTime, aircraftModel, currentReservations,
+                        maxSeats, missedFlights, bookingOpenDate, economyClassPrice, businessClassPrice,
+                        extraBaggagePrice, recurrent);
                 flightList.add(flight);
 
             } while (cursor.moveToNext());
             cursor.close();
         }
 
-        FlightAdapter adapter = new FlightAdapter(getContext(), flightList);
+        adapter = new FlightAdapter(getContext(), flightList);
         lvFlights.setAdapter(adapter);
     }
 
+    private void filterFlights(String query) {
+        ArrayList<Flight> filteredList = new ArrayList<>();
+        for (Flight flight : flightList) {
+            if (flight.getFlightNumber().toLowerCase().startsWith(query.toLowerCase())) {
+                filteredList.add(flight);
+            }
+        }
+
+        adapter = new FlightAdapter(getContext(), filteredList);
+        lvFlights.setAdapter(adapter);
+
+        if (filteredList.isEmpty()) {
+            Toast.makeText(getContext(), "No flights match your search", Toast.LENGTH_SHORT).show();
+        }
+    }
 
     private void showOptionsDialog(Flight flight) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -117,7 +155,7 @@ public class EditOrRemoveFlightFragment extends Fragment {
 
     private void showEditFlightDialog(Flight flight) {
         EditFlightDialogFragment editFlightDialogFragment = EditFlightDialogFragment.newInstance(flight);
-        editFlightDialogFragment.setOnFlightUpdatedListener(() -> loadFlights());
+        editFlightDialogFragment.setOnFlightUpdatedListener(this::loadFlights);
         editFlightDialogFragment.show(getParentFragmentManager(), "editFlightDialog");
     }
 }
