@@ -442,8 +442,20 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         String query = "SELECT * FROM NOTIFICATIONS WHERE PASSPORT_NUMBER = ? AND IS_READ = 0";
 
         // Execute the query and return the Cursor containing the result set
-        return db.rawQuery(query, new String[]{passportNumber});
+        Cursor cursor = db.rawQuery(query, new String[]{passportNumber});
+
+        if (cursor != null && cursor.moveToFirst()) {
+            // Mark the notifications as read
+            ContentValues contentValues = new ContentValues();
+            contentValues.put("IS_READ", 1); // Assuming '1' represents 'read'
+
+            // Update the IS_READ status for all matching rows
+            db.update("NOTIFICATIONS", contentValues, "PASSPORT_NUMBER = ? AND IS_READ = 0", new String[]{passportNumber});
+        }
+
+        return cursor;
     }
+
 
 
 }
