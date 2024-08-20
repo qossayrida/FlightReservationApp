@@ -30,7 +30,7 @@ public class ViewFlightsArchiveFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_view_flights_archive, container, false);
-
+        //declare list for flights and database helper and arraylist
         lvArchiveFlights = view.findViewById(R.id.lv_flights_archive);
         dbHelper = new DataBaseHelper(getContext());
         archiveFlightList = new ArrayList<>();
@@ -91,7 +91,7 @@ public class ViewFlightsArchiveFragment extends Fragment {
             Toast.makeText(getContext(), "No flights available for reservation", Toast.LENGTH_SHORT).show();
         }
     }
-
+    //show flights info
     private void showFlightDetailsDialog(Flight flight) {
         String flightDetails = "Flight Number: " + flight.getFlightNumber() + "\n" +
                 "Departure Place: " + flight.getDeparturePlace() + "\n" +
