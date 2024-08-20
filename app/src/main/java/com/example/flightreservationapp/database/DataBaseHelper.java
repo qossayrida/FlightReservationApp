@@ -21,7 +21,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public DataBaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
-
+    
     @Override
     public void onCreate(SQLiteDatabase db) {
         // Create USERS table
@@ -71,6 +71,17 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 "UNIQUE(PASSPORT_NUMBER, FLIGHT_NUMBER), " + // Unique constraint on passportNumber and flightNumber
                 "FOREIGN KEY(PASSPORT_NUMBER) REFERENCES USERS(PASSPORT_NUMBER), " +
                 "FOREIGN KEY(FLIGHT_NUMBER) REFERENCES FLIGHTS(FLIGHT_NUMBER))");
+
+
+        db.execSQL("CREATE TABLE NOTIFICATIONS(" +
+                "NOTIFICATION_ID TEXT PRIMARY KEY, " +
+                "PASSPORT_NUMBER TEXT," +
+                "FLIGHT_NUMBER TEXT, " +
+                "MESSAGE TEXT, " +
+                "TIMESTAMP DATETIME DEFAULT CURRENT_TIMESTAMP, " +
+                "IS_READ INTEGER DEFAULT 0, " +
+                "FOREIGN KEY(PASSPORT_NUMBER) REFERENCES USERS(PASSPORT_NUMBER), " +
+                "FOREIGN KEY(FLIGHT_NUMBER) REFERENCES FLIGHTS(FLIGHT_NUMBER))");
     }
 
 
@@ -115,8 +126,50 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     public void deleteFlight(String flightNumber) {
         SQLiteDatabase db = getWritableDatabase();
-        db.delete("FLIGHTS", "FLIGHT_NUMBER = ?", new String[]{flightNumber});
+        db.beginTransaction(); // Start a transaction for atomic operation
+
+        try {
+            // Retrieve all reservations for the given flight
+            Cursor cursor = getReservationsForFlight(flightNumber);
+
+            // Loop through all reservations
+            while (cursor.moveToNext()) {
+                String passportNumber = cursor.getString(cursor.getColumnIndexOrThrow("PASSPORT_NUMBER"));
+                String reservationId = cursor.getString(cursor.getColumnIndexOrThrow("RESERVATION_ID"));
+
+                // Create a notification message
+                String message = "Your flight with number " + flightNumber + " has been canceled.";
+
+                // Generate a unique notification ID (this is just an example, you might want to implement a more sophisticated ID generation)
+                String notificationId = reservationId + "_DELETED";
+
+                // Insert the notification into the NOTIFICATIONS table
+                ContentValues notificationValues = new ContentValues();
+                notificationValues.put("NOTIFICATION_ID", notificationId);
+                notificationValues.put("PASSPORT_NUMBER", passportNumber);
+                notificationValues.put("FLIGHT_NUMBER", flightNumber);
+                notificationValues.put("MESSAGE", message);
+                notificationValues.put("TIMESTAMP", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date()));
+                notificationValues.put("IS_READ", 0);
+
+                db.insert("NOTIFICATIONS", null, notificationValues);
+
+                // Delete the reservation
+                db.delete("RESERVATIONS", "RESERVATION_ID = ?", new String[]{reservationId});
+            }
+            cursor.close();
+
+            // Finally, delete the flight itself
+            db.delete("FLIGHTS", "FLIGHT_NUMBER = ?", new String[]{flightNumber});
+
+            db.setTransactionSuccessful(); // Commit the transaction
+        } catch (Exception e) {
+            Log.e("DatabaseError", "Error deleting flight and associated reservations", e);
+        } finally {
+            db.endTransaction(); // End the transaction
+        }
     }
+
 
     public Cursor searchFlights(String departureCity, String arrivalCity, String departureDate, String sortingOption, String passportNumber) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -248,6 +301,37 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
         // Execute the update operation and check the number of rows affected
         int rowsAffected = db.update("FLIGHTS", values, "FLIGHT_NUMBER = ?", new String[]{oldFlightNumber});
+
+
+        // If the flight was successfully updated, add notifications
+        if (rowsAffected > 0) {
+            // Retrieve all reservations for the given flight
+            Cursor cursor = getReservationsForFlight(oldFlightNumber);
+
+            // Loop through all reservations
+            while (cursor.moveToNext()) {
+                String passportNumber = cursor.getString(cursor.getColumnIndexOrThrow("PASSPORT_NUMBER"));
+                String reservationId = cursor.getString(cursor.getColumnIndexOrThrow("RESERVATION_ID"));
+
+                // Create a notification message
+                String message = "Your flight with number " + newFlightNumber + " has been updated.";
+
+                // Generate a unique notification ID (this is just an example, you might want to implement a more sophisticated ID generation)
+                String notificationId = reservationId + "_EDITED";
+
+                // Insert the notification into the NOTIFICATIONS table
+                ContentValues notificationValues = new ContentValues();
+                notificationValues.put("NOTIFICATION_ID", notificationId);
+                notificationValues.put("PASSPORT_NUMBER", passportNumber);
+                notificationValues.put("FLIGHT_NUMBER", oldFlightNumber);
+                notificationValues.put("MESSAGE", message);
+                notificationValues.put("TIMESTAMP", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date()));
+                notificationValues.put("IS_READ", 0);
+
+                db.insert("NOTIFICATIONS", null, notificationValues);
+            }
+            cursor.close();
+        }
 
         return rowsAffected > 0;
     }
