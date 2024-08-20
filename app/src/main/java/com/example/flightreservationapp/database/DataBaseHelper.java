@@ -435,5 +435,15 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return db.rawQuery(query, new String[]{currentDate,currentDate});
     }
 
+    public Cursor getUnreadNotificationsByPassportNumber(String passportNumber) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        // Query to select unread notifications for the given passport number
+        String query = "SELECT * FROM NOTIFICATIONS WHERE PASSPORT_NUMBER = ? AND IS_READ = 0";
+
+        // Execute the query and return the Cursor containing the result set
+        return db.rawQuery(query, new String[]{passportNumber});
+    }
+
 
 }
