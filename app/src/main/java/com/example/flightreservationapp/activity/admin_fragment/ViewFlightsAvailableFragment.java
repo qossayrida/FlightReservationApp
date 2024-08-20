@@ -23,9 +23,9 @@ import java.util.ArrayList;
 
 public class ViewFlightsAvailableFragment extends Fragment {
 
-    private ListView lvOpenFlights;
-    private DataBaseHelper dbHelper;
-    private ArrayList<Flight> openFlightList;
+    private ListView lvOpenFlights; // ListView to display available flights
+    private DataBaseHelper dbHelper; // Database helper for querying flights
+    private ArrayList<Flight> openFlightList; // List to hold available flights
 
     @Nullable
     @Override
@@ -39,11 +39,11 @@ public class ViewFlightsAvailableFragment extends Fragment {
         // Load all open flights
         loadOpenFlights();
 
-        // Set item click listener
+        // Set item click listener for the ListView
         lvOpenFlights.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Show dialog with flight information
+                // Show a dialog with detailed flight information
                 showFlightDetailsDialog(openFlightList.get(position));
             }
         });
@@ -51,12 +51,14 @@ public class ViewFlightsAvailableFragment extends Fragment {
         return view;
     }
 
+    // Method to load available flights from the database
     private void loadOpenFlights() {
-        Cursor cursor = dbHelper.getAvailableFlights();
-        openFlightList.clear();
+        Cursor cursor = dbHelper.getAvailableFlights(); // Query database for available flights
+        openFlightList.clear(); // Clear the list before adding new data
 
         if (cursor != null && cursor.moveToFirst()) {
             do {
+                // Extract flight details from the cursor
                 String flightNumber = cursor.getString(cursor.getColumnIndexOrThrow("FLIGHT_NUMBER"));
                 String departurePlace = cursor.getString(cursor.getColumnIndexOrThrow("DEPARTURE_PLACE"));
                 String destination = cursor.getString(cursor.getColumnIndexOrThrow("DESTINATION"));
@@ -75,26 +77,31 @@ public class ViewFlightsAvailableFragment extends Fragment {
                 double extraBaggagePrice = cursor.getDouble(cursor.getColumnIndexOrThrow("EXTRA_BAGGAGE_PRICE"));
                 Flight.RecurrentType recurrent = Flight.RecurrentType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("RECURRENT")));
 
-                Log.d("=====>>>",cursor.getString(cursor.getColumnIndexOrThrow("DEPARTURE_DATE")));
+                // Log departure date for debugging
+                Log.d("=====>>>", cursor.getString(cursor.getColumnIndexOrThrow("DEPARTURE_DATE")));
 
-                Flight flight = new Flight( destination,  departureDate,  arrivalDate,
-                        duration,  flightNumber,  departurePlace,  departureTime,  arrivalTime,
-                        aircraftModel,  currentReservations,  maxSeats,  missedFlights,  bookingOpenDate,
-                        economyClassPrice ,businessClassPrice,extraBaggagePrice,recurrent);;
+                // Create a Flight object and add it to the list
+                Flight flight = new Flight(destination, departureDate, arrivalDate,
+                        duration, flightNumber, departurePlace, departureTime, arrivalTime,
+                        aircraftModel, currentReservations, maxSeats, missedFlights, bookingOpenDate,
+                        economyClassPrice, businessClassPrice, extraBaggagePrice, recurrent);
                 openFlightList.add(flight);
 
             } while (cursor.moveToNext());
-            cursor.close();
+            cursor.close(); // Close the cursor after processing
         }
 
+        // Set the adapter to the ListView to display the flights
         FlightAdapter adapter = new FlightAdapter(getContext(), openFlightList);
         lvOpenFlights.setAdapter(adapter);
 
+        // Show a message if no flights are available
         if (openFlightList.isEmpty()) {
             Toast.makeText(getContext(), "No flights available for reservation", Toast.LENGTH_SHORT).show();
         }
     }
 
+    // Method to show a dialog with flight details
     private void showFlightDetailsDialog(Flight flight) {
         String flightDetails = "Flight Number: " + flight.getFlightNumber() + "\n" +
                 "Departure Place: " + flight.getDeparturePlace() + "\n" +
@@ -110,8 +117,8 @@ public class ViewFlightsAvailableFragment extends Fragment {
                 "Economy Class Price: " + flight.getEconomyClassPrice() + "\n" +
                 "Business Class Price: " + flight.getBusinessClassPrice() + "\n" +
                 "Extra Baggage Price: " + flight.getExtraBaggagePrice() + "\n" +
-                "Recurrent: " + flight.getRecurrent()+"\n" +
-                "Current Reservations: " + flight.getCurrentReservations()+"\n" +
+                "Recurrent: " + flight.getRecurrent() + "\n" +
+                "Current Reservations: " + flight.getCurrentReservations() + "\n" +
                 "Missed Flights: " + flight.getMissedFlights();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -120,9 +127,9 @@ public class ViewFlightsAvailableFragment extends Fragment {
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
+                        dialog.dismiss(); // Close the dialog when OK is clicked
                     }
                 });
-        builder.show();
+        builder.show(); // Show the dialog
     }
 }

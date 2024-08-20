@@ -23,22 +23,26 @@ import java.util.Date;
 
 public class EditFlightDialogFragment extends DialogFragment {
 
+    // Views for input fields and buttons
     private EditText etFlightNumber, etDepartureDate,
             etDepartureTime, etArrivalDate, etArrivalTime, etDuration, etAircraftModel, etMaxSeats,
             etBookingOpenDate, etPriceEconomy, etPriceBusiness, etPriceExtraBaggage;
-    private Spinner spinnerRecurrent,spDeparturePlace, spDestination;
+    private Spinner spinnerRecurrent, spDeparturePlace, spDestination;
     private Button btnUpdateFlight;
-    private Flight flight;
+    private Flight flight; // Flight object to be edited
     private OnFlightUpdatedListener flightUpdatedListener;
 
+    // Interface for notifying when the flight is updated
     public interface OnFlightUpdatedListener {
         void onFlightUpdated();
     }
 
+    // Set the listener for flight updates
     public void setOnFlightUpdatedListener(OnFlightUpdatedListener listener) {
         this.flightUpdatedListener = listener;
     }
 
+    // Create a new instance of the fragment with the given flight
     public static EditFlightDialogFragment newInstance(Flight flight) {
         EditFlightDialogFragment fragment = new EditFlightDialogFragment();
         Bundle args = new Bundle();
@@ -50,6 +54,7 @@ public class EditFlightDialogFragment extends DialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Retrieve the flight object from arguments
         if (getArguments() != null) {
             flight = (Flight) getArguments().getSerializable("flight");
         }
@@ -59,7 +64,6 @@ public class EditFlightDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_create_flight, container, false);
-
 
         // Initialize views
         etFlightNumber = view.findViewById(R.id.et_flight_number);
@@ -79,9 +83,10 @@ public class EditFlightDialogFragment extends DialogFragment {
         spinnerRecurrent = view.findViewById(R.id.spinner_recurrent);
         btnUpdateFlight = view.findViewById(R.id.btn_submit);
 
+        // Set up date and time pickers for relevant fields
         setUpDateAndTimePickers();
 
-        // Populate fields with the current flight data
+        // Populate fields with current flight data if available
         if (flight != null) {
             etFlightNumber.setText(flight.getFlightNumber());
             setSpinnerSelection(spDeparturePlace, flight.getDeparturePlace());
@@ -97,6 +102,8 @@ public class EditFlightDialogFragment extends DialogFragment {
             etPriceEconomy.setText(String.valueOf(flight.getEconomyClassPrice()));
             etPriceBusiness.setText(String.valueOf(flight.getBusinessClassPrice()));
             etPriceExtraBaggage.setText(String.valueOf(flight.getExtraBaggagePrice()));
+
+            // Set spinner selection for recurrent type
             if(flight.getRecurrent().equals(Flight.RecurrentType.NONE))
                 spinnerRecurrent.setSelection(0);
             else if(flight.getRecurrent().equals(Flight.RecurrentType.DAILY))
@@ -104,17 +111,19 @@ public class EditFlightDialogFragment extends DialogFragment {
             else
                 spinnerRecurrent.setSelection(2);
 
-
             // Update button text to reflect edit mode
             btnUpdateFlight.setText("Update Flight");
         }
 
+        // Set up the update button's click listener
         btnUpdateFlight.setOnClickListener(v -> updateFlight());
 
         return view;
     }
 
+    // Update the flight details in the database
     private void updateFlight() {
+        // Retrieve input values from fields
         String flightNumber = etFlightNumber.getText().toString().trim();
         String departurePlace = spDeparturePlace.getSelectedItem().toString().trim();
         String destination = spDestination.getSelectedItem().toString().trim();
@@ -131,23 +140,26 @@ public class EditFlightDialogFragment extends DialogFragment {
         double priceExtraBaggage = Double.parseDouble(etPriceExtraBaggage.getText().toString().trim());
         String recurrent = spinnerRecurrent.getSelectedItem().toString();
 
+        // Update the flight in the database
         DataBaseHelper dbHelper = new DataBaseHelper(getContext());
-
         boolean success = dbHelper.updateFlight(flight.getFlightNumber(), flightNumber, departurePlace, destination,
                 departureDate, departureTime, arrivalDate, arrivalTime, duration, aircraftModel, maxSeats,
                 bookingOpenDate, priceEconomy, priceBusiness, priceExtraBaggage, recurrent);
 
+        // Show success or failure message
         if (success) {
             Toast.makeText(getContext(), "Flight updated successfully!", Toast.LENGTH_SHORT).show();
+            // Notify the listener about the update
             if (flightUpdatedListener != null) {
                 flightUpdatedListener.onFlightUpdated();
             }
-            dismiss();
+            dismiss(); // Close the dialog
         } else {
             Toast.makeText(getContext(), "Failed to update flight", Toast.LENGTH_SHORT).show();
         }
     }
 
+    // Set up date and time pickers for fields
     private void setUpDateAndTimePickers() {
         setDatePicker(etDepartureDate);
         setTimePicker(etDepartureTime);
@@ -156,6 +168,7 @@ public class EditFlightDialogFragment extends DialogFragment {
         setDatePicker(etBookingOpenDate);
     }
 
+    // Set a date picker for the given EditText
     private void setDatePicker(EditText editText) {
         editText.setOnClickListener(v -> {
             final Calendar c = Calendar.getInstance();
@@ -166,19 +179,17 @@ public class EditFlightDialogFragment extends DialogFragment {
             DatePickerDialog datePickerDialog = new DatePickerDialog(
                     getContext(),
                     (view, year1, monthOfYear, dayOfMonth) -> {
-                        // Format the month and day to always be two digits
+                        // Format the selected date
                         String formattedDate = String.format("%04d-%02d-%02d", year1, monthOfYear + 1, dayOfMonth);
                         editText.setText(formattedDate);
 
-                        // After the date is set, calculate the duration
+                        // Calculate and set the flight duration
                         int duration = calculateDuration(
                                 etDepartureDate.getText().toString().trim(),
                                 etDepartureTime.getText().toString().trim(),
                                 etArrivalDate.getText().toString().trim(),
                                 etArrivalTime.getText().toString().trim()
                         );
-
-                        // Check if duration calculation was successful
                         if (duration != -1) {
                             etDuration.setText(String.valueOf(duration)); // Set duration in minutes
                         } else {
@@ -190,6 +201,7 @@ public class EditFlightDialogFragment extends DialogFragment {
         });
     }
 
+    // Set a time picker for the given EditText
     private void setTimePicker(EditText editText) {
         editText.setOnClickListener(v -> {
             final Calendar c = Calendar.getInstance();
@@ -199,19 +211,17 @@ public class EditFlightDialogFragment extends DialogFragment {
             TimePickerDialog timePickerDialog = new TimePickerDialog(
                     getContext(),
                     (view, hourOfDay, minute1) -> {
-                        // Format the time to always be two digits
+                        // Format the selected time
                         String formattedTime = String.format("%02d:%02d", hourOfDay, minute1);
                         editText.setText(formattedTime);
 
-                        // After the time is set, calculate the duration
+                        // Calculate and set the flight duration
                         int duration = calculateDuration(
                                 etDepartureDate.getText().toString().trim(),
                                 etDepartureTime.getText().toString().trim(),
                                 etArrivalDate.getText().toString().trim(),
                                 etArrivalTime.getText().toString().trim()
                         );
-
-                        // Check if duration calculation was successful
                         if (duration != -1) {
                             etDuration.setText(String.valueOf(duration)); // Set duration in minutes
                         } else {
@@ -223,6 +233,7 @@ public class EditFlightDialogFragment extends DialogFragment {
         });
     }
 
+    // Calculate the flight duration in minutes based on departure and arrival date/time
     private int calculateDuration(String departureDate, String departureTime, String arrivalDate, String arrivalTime) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         try {
@@ -240,6 +251,7 @@ public class EditFlightDialogFragment extends DialogFragment {
         }
     }
 
+    // Set the spinner selection based on the provided value
     private void setSpinnerSelection(Spinner spinner, String value) {
         ArrayAdapter<CharSequence> adapter = (ArrayAdapter<CharSequence>) spinner.getAdapter();
         if (adapter != null) {
@@ -247,5 +259,4 @@ public class EditFlightDialogFragment extends DialogFragment {
             spinner.setSelection(position);
         }
     }
-
 }
