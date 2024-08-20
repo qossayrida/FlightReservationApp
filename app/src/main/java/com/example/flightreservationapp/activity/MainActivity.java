@@ -1,10 +1,14 @@
 package com.example.flightreservationapp.activity;
 
 
+import android.app.AlertDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -14,6 +18,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+
 import com.example.flightreservationapp.R;
 import com.example.flightreservationapp.database.*;
 import com.example.flightreservationapp.utility.*;
@@ -32,6 +39,10 @@ public class MainActivity extends AppCompatActivity {
     private SharedPrefManager sharedPrefManager;
     private DataBaseHelper dataBaseHelper;
     private ImageView rotatingImageView;
+
+    private static final String CHANNEL_ID = "unread_notifications_channel";
+    private static final int NOTIFICATION_ID = 1001;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,6 +162,10 @@ public class MainActivity extends AppCompatActivity {
             String userJson = JsonConverter.userToJson(user);
             sharedPrefManager.writeString("userJson", userJson);
 
+            // Show unread notifications for the user
+            if(!user.getRole().equals("Admin"))
+                showUnreadNotifications(user.getPassportNumber());
+
             Intent intent = new Intent(this, NavigationDrawerActivity.class);
             startActivity(intent);
             finish(); // Close MainActivity
@@ -195,6 +210,70 @@ public class MainActivity extends AppCompatActivity {
         } finally {
             db.close();
         }
+    }
+
+
+    private void showUnreadNotifications(String passportNumber) {
+        Cursor notificationsCursor = dataBaseHelper.getUnreadNotificationsByPassportNumber(passportNumber);
+
+        if (notificationsCursor != null && notificationsCursor.moveToFirst()) {
+            StringBuilder notificationsMessage = new StringBuilder();
+
+            do {
+                // Fetch notification details safely
+                int messageIndex = notificationsCursor.getColumnIndex("MESSAGE");
+                int timestampIndex = notificationsCursor.getColumnIndex("TIMESTAMP");
+
+                String message = messageIndex != -1 ? notificationsCursor.getString(messageIndex) : "No message";
+                String timestamp = timestampIndex != -1 ? notificationsCursor.getString(timestampIndex) : "No timestamp";
+
+                notificationsMessage.append("Message: ").append(message).append("\n")
+                        .append("Timestamp: ").append(timestamp).append("\n\n");
+            } while (notificationsCursor.moveToNext());
+
+            // Create a notification for the unread notifications
+            createNotification("Unread Notifications", notificationsMessage.toString());
+        } else {
+            // No unread notifications
+            Toast.makeText(MainActivity.this, "No unread notifications.", Toast.LENGTH_SHORT).show();
+        }
+
+        if (notificationsCursor != null) {
+            notificationsCursor.close(); // Close the cursor when done
+        }
+    }
+
+    private void createNotificationChannel() {
+        // Notification channels are only available in Android 8.0 (API level 26) and above.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Unread Notifications";
+            String description = "Channel for unread notifications";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+
+            // Register the channel with the system
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
+        }
+    }
+
+    private void createNotification(String title, String body) {
+        createNotificationChannel();  // Ensure the channel is created
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_flight)  // Replace with your app's notification icon
+                .setContentTitle(title)
+                .setContentText(body)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(body))
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+
+        // Display the notification
+        notificationManager.notify(NOTIFICATION_ID, builder.build());
     }
 }
 
