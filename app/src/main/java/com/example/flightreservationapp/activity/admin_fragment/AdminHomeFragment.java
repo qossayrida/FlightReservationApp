@@ -32,7 +32,8 @@ public class AdminHomeFragment extends Fragment {
         // Load ClosestDepartureDatesFragment into the container inside AdminHomeFragment
         getChildFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container_admin, new ClosestDepartureDatesFragment()) // Replace the fragment container with ClosestDepartureDatesFragment
-                .commit(); // Commit the transaction to display the fragment
+                .commit();
+        // Commit the transaction to display the fragment
 
         return view; // Return the inflated view
     }
