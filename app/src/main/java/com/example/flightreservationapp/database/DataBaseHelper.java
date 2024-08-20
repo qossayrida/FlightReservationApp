@@ -416,25 +416,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return db.rawQuery(query, new String[]{currentDate});
     }
 
-
-    public Cursor getAvailableFlights() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        String currentDate = dateFormat.format(new Date());
-
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        // Query to retrieve flights where the booking open date has arrived,
-        // the departure date is in the future, and the flight is not fully booked
-        String query = "SELECT * " +
-                "FROM FLIGHTS " +
-                "WHERE BOOKING_OPEN_DATE <= ? " + // Booking is open
-                "AND DEPARTURE_DATE > ? " +       // Flight hasn't departed yet
-                "AND CURRENT_RESERVATIONS < MAX_SEATS";     // Flight is not fully booked
-
-        // Execute the query and return the Cursor containing the result set
-        return db.rawQuery(query, new String[]{currentDate,currentDate});
-    }
-
     public Cursor getUnreadNotificationsByPassportNumber(String passportNumber) {
         SQLiteDatabase db = getReadableDatabase();
 
@@ -457,5 +438,22 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
 
 
+    public Cursor getAvailableFlights() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String currentDate = dateFormat.format(new Date());
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // Query to retrieve flights where the booking open date has arrived,
+        // the departure date is in the future, and the flight is not fully booked
+        String query = "SELECT * " +
+                "FROM FLIGHTS " +
+                "WHERE BOOKING_OPEN_DATE <= ? " + // Booking is open
+                "AND DEPARTURE_DATE > ? " +       // Flight hasn't departed yet
+                "AND CURRENT_RESERVATIONS < MAX_SEATS";     // Flight is not fully booked
+
+        // Execute the query and return the Cursor containing the result set
+        return db.rawQuery(query, new String[]{currentDate,currentDate});
+    }
 
 }
