@@ -26,15 +26,13 @@ public class AdminHomeFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_admin_home, container, false);
 
-        // Load ClosestDepartureDatesFragment into the container inside AdminHomeFragment
+        // Load ClosestDepartureDatesFragment into AdminHomeFragment
         getChildFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container_admin, new ClosestDepartureDatesFragment()) // Replace the fragment container with ClosestDepartureDatesFragment
+                .replace(R.id.fragment_container_admin, new ClosestDepartureDatesFragment())
                 .commit();
-        // Commit the transaction to display the fragment
 
-        return view; // Return the inflated view
+        return view;
     }
 }

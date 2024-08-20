@@ -27,8 +27,8 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText foodPreferenceEditText;
     private EditText dateOfBirthEditText;
     private EditText nationalityEditText;
-    private String role;
     private Button signUpButton;
+    private String role;
     private DataBaseHelper dataBaseHelper;
 
     private TextView titleLabel;

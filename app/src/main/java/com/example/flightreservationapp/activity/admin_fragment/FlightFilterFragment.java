@@ -14,10 +14,10 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 import androidx.fragment.app.Fragment;
 
 import com.example.flightreservationapp.R;
+import com.example.flightreservationapp.activity.SignUpActivity;
 import com.example.flightreservationapp.database.DataBaseHelper;
 import com.example.flightreservationapp.model.Flight;
 import com.example.flightreservationapp.utility.FlightAdapter;
@@ -30,15 +30,16 @@ import java.util.Date;
 
 public class FlightFilterFragment extends Fragment {
 
-    private EditText etDepartureDate, etArrivalDate; // EditText for departure and arrival dates
-    private Spinner spDepartureCity, spArrivalCity; // Spinner for selecting departure and arrival cities
-    private Button btnSearchFlights; // Button to initiate flight search
-    private ListView lvFlightResults; // ListView to display search results
-    private DataBaseHelper databaseHelper; // Database helper for querying flights
-    private ArrayList<Flight> flightList; // List to hold filtered flights
+    private EditText etDepartureDate,etArrivalDate;
+    private Spinner spDepartureCity, spArrivalCity;
+    private Button btnSearchFlights;
+    private ListView lvFlightResults;
+    private DataBaseHelper databaseHelper;
+    ArrayList<Flight> flightList;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_flight_filter, container, false);
 
@@ -50,58 +51,54 @@ public class FlightFilterFragment extends Fragment {
         btnSearchFlights = view.findViewById(R.id.btnSearchFlights);
         lvFlightResults = view.findViewById(R.id.lvFlightResults);
 
-        // Set date pickers for departure and arrival date fields
         setDatePicker(etDepartureDate);
         setDatePicker(etArrivalDate);
 
         // Initialize database helper
         databaseHelper = new DataBaseHelper(getContext());
 
-        // Set up search button click listener
-        btnSearchFlights.setOnClickListener(v -> {
-            // Retrieve user input
-            String departureCity = spDepartureCity.getSelectedItem().toString().trim();
-            String arrivalCity = spArrivalCity.getSelectedItem().toString().trim();
-            String departureDate = etDepartureDate.getText().toString().trim();
-            String arrivalDate = etArrivalDate.getText().toString().trim();
+        btnSearchFlights.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String departureCity = spDepartureCity.getSelectedItem().toString().trim();
+                String arrivalCity = spArrivalCity.getSelectedItem().toString().trim();
+                String departureDate = etDepartureDate.getText().toString().trim();
+                String arrivalDate = etArrivalDate.getText().toString().trim();
 
-            // Check if all required fields are filled
-            if (departureCity.isEmpty() || arrivalCity.isEmpty() || departureDate.isEmpty()) {
-                Toast.makeText(getContext(), "Please enter all fields", Toast.LENGTH_SHORT).show();
-            } else {
-                // Perform flight search with the provided criteria
-                searchFlights(departureCity, arrivalCity, departureDate, arrivalDate);
+                if (departureCity.isEmpty() || arrivalCity.isEmpty() || departureDate.isEmpty()) {
+                    Toast.makeText(getContext(), "Please enter all fields", Toast.LENGTH_SHORT).show();
+                } else {
+                    searchFlights(departureCity, arrivalCity, departureDate,arrivalDate);
+                }
             }
         });
 
-        // Set item click listener for flight results
-        lvFlightResults.setOnItemClickListener((parent, view1, position, id) -> {
-            // Show details dialog for selected flight
-            showFlightDetailsDialog(flightList.get(position));
+        // Set item click listener
+        lvFlightResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Show dialog with flight information
+                showFlightDetailsDialog(flightList.get(position));
+            }
         });
 
         return view;
     }
 
-    // Search flights based on provided criteria
-    private void searchFlights(String departureCity, String arrivalCity, String departureDate, String arrivalDate) {
-        // Retrieve all flights from the database
-        Cursor cursor = databaseHelper.getAllFlights();
+    private void searchFlights(String departureCity, String arrivalCity, String departureDate,String arrivalDate) {
+        Cursor cursor = databaseHelper.getAllFlights();  // Retrieve all flights or use custom query
         flightList = new ArrayList<>();
 
         if (cursor != null && cursor.moveToFirst()) {
             do {
-                // Retrieve flight details from the cursor
                 String flightNumber = cursor.getString(cursor.getColumnIndexOrThrow("FLIGHT_NUMBER"));
                 String depPlace = cursor.getString(cursor.getColumnIndexOrThrow("DEPARTURE_PLACE"));
                 String destPlace = cursor.getString(cursor.getColumnIndexOrThrow("DESTINATION"));
                 String depDate = cursor.getString(cursor.getColumnIndexOrThrow("DEPARTURE_DATE"));
                 String destDate = cursor.getString(cursor.getColumnIndexOrThrow("DEPARTURE_DATE"));
 
-                // Apply filtering based on user input
-                if (depPlace.equalsIgnoreCase(departureCity) && destPlace.equalsIgnoreCase(arrivalCity)
-                        && depDate.equals(departureDate) && destDate.equals(arrivalDate)) {
-                    // Retrieve additional flight details
+                // Apply filtering
+                if (depPlace.equalsIgnoreCase(departureCity) && destPlace.equalsIgnoreCase(arrivalCity) && depDate.equals(departureDate) && destDate.equals(arrivalDate)) {
                     String aircraftModel = cursor.getString(cursor.getColumnIndexOrThrow("AIRCRAFT_MODEL"));
                     String departureTime = cursor.getString(cursor.getColumnIndexOrThrow("DEPARTURE_TIME"));
                     String arrivalTime = cursor.getString(cursor.getColumnIndexOrThrow("ARRIVAL_TIME"));
@@ -115,28 +112,25 @@ public class FlightFilterFragment extends Fragment {
                     double extraBaggagePrice = cursor.getDouble(cursor.getColumnIndexOrThrow("EXTRA_BAGGAGE_PRICE"));
                     Flight.RecurrentType recurrent = Flight.RecurrentType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("RECURRENT")));
 
-                    // Create and add the flight object to the list
-                    Flight flight = new Flight(destPlace, depDate, destDate, duration, flightNumber,
-                            depPlace, departureTime, arrivalTime, aircraftModel, currentReservations,
-                            maxSeats, missedFlights, bookingOpenDate, economyClassPrice, businessClassPrice,
-                            extraBaggagePrice, recurrent);
+                    Flight flight = new Flight( destPlace,  depDate,  destDate,
+                            duration,  flightNumber,  depPlace,  departureTime,  arrivalTime,
+                            aircraftModel,  currentReservations,  maxSeats,  missedFlights,  bookingOpenDate,
+                            economyClassPrice ,businessClassPrice,extraBaggagePrice,recurrent);
                     flightList.add(flight);
                 }
             } while (cursor.moveToNext());
-            cursor.close(); // Close the cursor when done
         }
 
-        // Set the adapter to the ListView to display the search results
+        // Set the adapter to the ListView
         FlightAdapter adapter = new FlightAdapter(getContext(), flightList);
         lvFlightResults.setAdapter(adapter);
 
-        // Show a message if no flights are found
         if (flightList.isEmpty()) {
             Toast.makeText(getContext(), "No flights found", Toast.LENGTH_SHORT).show();
         }
     }
 
-    // Show a dialog with detailed information for the selected flight
+
     private void showFlightDetailsDialog(Flight flight) {
         String flightDetails = "Flight Number: " + flight.getFlightNumber() + "\n" +
                 "Departure Place: " + flight.getDeparturePlace() + "\n" +
@@ -152,18 +146,23 @@ public class FlightFilterFragment extends Fragment {
                 "Economy Class Price: " + flight.getEconomyClassPrice() + "\n" +
                 "Business Class Price: " + flight.getBusinessClassPrice() + "\n" +
                 "Extra Baggage Price: " + flight.getExtraBaggagePrice() + "\n" +
-                "Recurrent: " + flight.getRecurrent() + "\n" +
-                "Current Reservations: " + flight.getCurrentReservations() + "\n" +
+                "Recurrent: " + flight.getRecurrent()+"\n" +
+                "Current Reservations: " + flight.getCurrentReservations()+"\n" +
                 "Missed Flights: " + flight.getMissedFlights();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Flight Details")
                 .setMessage(flightDetails)
-                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
         builder.show();
     }
 
-    // Set up a date picker for the specified EditText
+
     private void setDatePicker(EditText editText) {
         editText.setOnClickListener(v -> {
             final Calendar c = Calendar.getInstance();
@@ -174,10 +173,11 @@ public class FlightFilterFragment extends Fragment {
             DatePickerDialog datePickerDialog = new DatePickerDialog(
                     getContext(),
                     (view, year1, monthOfYear, dayOfMonth) -> {
-                        // Format the selected date
+                        // Format the month and day to always be two digits
                         String formattedDate = String.format("%04d-%02d-%02d", year1, monthOfYear + 1, dayOfMonth);
 
-                        // Validate the selected date
+
+                        // Validate against etDepartureDate
                         if (editText == etDepartureDate) {
                             if (!isDateValid(formattedDate)) {
                                 Toast.makeText(getContext(), "Date cannot be earlier than today", Toast.LENGTH_SHORT).show();
@@ -202,7 +202,6 @@ public class FlightFilterFragment extends Fragment {
                                 return;
                             }
                         }
-                        // Set the selected date to the EditText
                         editText.setText(formattedDate);
                     },
                     year, month, day);
@@ -210,7 +209,6 @@ public class FlightFilterFragment extends Fragment {
         });
     }
 
-    // Check if the selected date is valid (not earlier than today)
     private boolean isDateValid(String selectedDate) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         try {
@@ -222,7 +220,6 @@ public class FlightFilterFragment extends Fragment {
         }
     }
 
-    // Check if the arrival date is valid (not earlier than departure date)
     private boolean isArrivalDateValid(String departureDate, String arrivalDate) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         try {

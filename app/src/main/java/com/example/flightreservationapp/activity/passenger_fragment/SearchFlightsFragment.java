@@ -30,20 +30,15 @@ import java.util.Date;
 
 public class SearchFlightsFragment extends Fragment {
 
-    // UI elements
     private EditText etDepartureDate, etReturnDate;
     private TextView tvReturnDateLabel;
     private RadioGroup rgTripType;
-    private Spinner spDepartureCity, spArrivalCity, spSorting;
+    private Spinner  spDepartureCity, spArrivalCity, spSorting;
     private Button btnSearch;
     private ListView lvOneWayFlightResults;
     private ListView lvReturnWayFlightResults;
-
-    // Database helper
     private DataBaseHelper dbHelper;
-
-    // Flight lists for storing search results
-    private ArrayList<Flight> oneWayFlightList, returnWayFlightList;
+    private ArrayList<Flight> oneWayFlightList,returnWayFlightList;
     private User savedUser = null;
 
     @Nullable
@@ -51,7 +46,6 @@ public class SearchFlightsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search_flights, container, false);
 
-        // Initialize UI elements
         spDepartureCity = view.findViewById(R.id.sp_departure_city);
         spArrivalCity = view.findViewById(R.id.sp_arrival_city);
         etDepartureDate = view.findViewById(R.id.et_departure_date);
@@ -63,16 +57,14 @@ public class SearchFlightsFragment extends Fragment {
         lvOneWayFlightResults = view.findViewById(R.id.lv_one_way_flight_results);
         lvReturnWayFlightResults = view.findViewById(R.id.lv_Return_way_flight_results);
 
-        // Set up date pickers for departure and return dates
         setDatePicker(etDepartureDate);
         setDatePicker(etReturnDate);
 
-        // Initialize database helper and flight lists
         dbHelper = new DataBaseHelper(getContext());
         oneWayFlightList = new ArrayList<>();
         returnWayFlightList = new ArrayList<>();
 
-        // Show/hide return date fields based on selected trip type
+        // Show/hide return date based on trip type
         rgTripType.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == R.id.rb_round_trip) {
                 etReturnDate.setVisibility(View.VISIBLE);
@@ -85,7 +77,6 @@ public class SearchFlightsFragment extends Fragment {
             }
         });
 
-        // Set up search button click listener
         btnSearch.setOnClickListener(v -> searchFlights());
 
         // Fetch the current user from shared preferences
@@ -94,13 +85,15 @@ public class SearchFlightsFragment extends Fragment {
         if (savedUserJson != null)
             savedUser = JsonConverter.jsonToUser(savedUserJson);
 
+
         return view;
     }
 
-    // Adjust height of ListView for one-way flights
     private void DivideHeightInHalf() {
+        // Get the parent layout of the ListView
         View parent = (View) lvOneWayFlightResults.getParent();
 
+        // Adjust layout params based on the parent layout type
         if (parent instanceof FrameLayout) {
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
                     FrameLayout.LayoutParams.MATCH_PARENT,
@@ -116,10 +109,11 @@ public class SearchFlightsFragment extends Fragment {
         }
     }
 
-    // Set ListView height to full size for round trip
     private void setFullHeight() {
+        // Get the parent layout of the ListView
         View parent = (View) lvOneWayFlightResults.getParent();
 
+        // Adjust layout params based on the parent layout type
         if (parent instanceof FrameLayout) {
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
                     FrameLayout.LayoutParams.MATCH_PARENT,
@@ -135,7 +129,6 @@ public class SearchFlightsFragment extends Fragment {
         }
     }
 
-    // Perform flight search based on user input
     private void searchFlights() {
         String departureCity = spDepartureCity.getSelectedItem().toString().trim();
         String arrivalCity = spArrivalCity.getSelectedItem().toString().trim();
@@ -146,15 +139,13 @@ public class SearchFlightsFragment extends Fragment {
         int selectedTripType = rgTripType.getCheckedRadioButtonId();
         if (selectedTripType == R.id.rb_one_way) {
             returnDate = "";
-        } else {
-            // Search return flights
-            Cursor cursor = dbHelper.searchReturnFlights(departureCity, arrivalCity, returnDate, sortingOption, savedUser.getPassportNumber());
+        }else{
+            Cursor cursor = dbHelper.searchReturnFlights(departureCity, arrivalCity, returnDate, sortingOption,savedUser.getPassportNumber());
 
             if (cursor != null && cursor.moveToFirst()) {
-                returnWayFlightList.clear(); // Clear previous results
+                returnWayFlightList.clear(); // Clear the list before adding new results
 
                 do {
-                    // Extract flight details from cursor
                     String flightNumber = cursor.getString(cursor.getColumnIndexOrThrow("FLIGHT_NUMBER"));
                     String departurePlace = cursor.getString(cursor.getColumnIndexOrThrow("DEPARTURE_PLACE"));
                     String destination = cursor.getString(cursor.getColumnIndexOrThrow("DESTINATION"));
@@ -173,45 +164,39 @@ public class SearchFlightsFragment extends Fragment {
                     double extraBaggagePrice = cursor.getDouble(cursor.getColumnIndexOrThrow("EXTRA_BAGGAGE_PRICE"));
                     Flight.RecurrentType recurrent = Flight.RecurrentType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("RECURRENT")));
 
-                    // Create Flight object and add to list
-                    Flight flight = new Flight(destination, departureDate, arrivalDate,
-                            duration, flightNumber, departurePlace, departureTime, arrivalTime,
-                            aircraftModel, currentReservations, maxSeats, missedFlights, bookingOpenDate,
-                            economyClassPrice, businessClassPrice, extraBaggagePrice, recurrent);
+                    Flight flight = new Flight( destination,  departureDate,  arrivalDate,
+                            duration,  flightNumber,  departurePlace,  departureTime,  arrivalTime,
+                            aircraftModel,  currentReservations,  maxSeats,  missedFlights,  bookingOpenDate,
+                            economyClassPrice ,businessClassPrice,extraBaggagePrice,recurrent);
                     returnWayFlightList.add(flight);
 
                 } while (cursor.moveToNext());
-
-                // Set adapter for return flight results
                 FlightAdapter adapter = new FlightAdapter(getContext(), returnWayFlightList);
                 lvReturnWayFlightResults.setAdapter(adapter);
 
-                // Set item click listener for return flights
                 lvReturnWayFlightResults.setOnItemClickListener((parent, view, position, id) -> showFlightDetailsDialog(returnWayFlightList.get(position)));
-            } else {
-                returnWayFlightList.clear(); // Clear list if no results found
+            }else {
+                returnWayFlightList.clear(); // Clear the list if no results are found
                 Toast.makeText(getContext(), "No flights found to return for the specified criteria", Toast.LENGTH_SHORT).show();
 
-                // Update ListView to reflect cleared list
+                // Update the ListView to reflect the cleared list
                 FlightAdapter adapter = new FlightAdapter(getContext(), returnWayFlightList);
                 lvReturnWayFlightResults.setAdapter(adapter);
             }
         }
 
-        // Validate required fields
         if (TextUtils.isEmpty(departureCity) || TextUtils.isEmpty(arrivalCity) || TextUtils.isEmpty(departureDate)) {
             Toast.makeText(getContext(), "Please fill in all required fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Perform database query for one-way flights
-        Cursor cursor = dbHelper.searchFlights(departureCity, arrivalCity, departureDate, sortingOption, savedUser.getPassportNumber());
+        // Perform database query using dbHelper with sorting and filtering criteria
+        Cursor cursor = dbHelper.searchFlights(departureCity, arrivalCity, departureDate, sortingOption,savedUser.getPassportNumber());
 
         if (cursor != null && cursor.moveToFirst()) {
-            oneWayFlightList.clear(); // Clear previous results
+            oneWayFlightList.clear(); // Clear the list before adding new results
 
             do {
-                // Extract flight details from cursor
                 String flightNumber = cursor.getString(cursor.getColumnIndexOrThrow("FLIGHT_NUMBER"));
                 String departurePlace = cursor.getString(cursor.getColumnIndexOrThrow("DEPARTURE_PLACE"));
                 String destination = cursor.getString(cursor.getColumnIndexOrThrow("DESTINATION"));
@@ -230,35 +215,34 @@ public class SearchFlightsFragment extends Fragment {
                 double extraBaggagePrice = cursor.getDouble(cursor.getColumnIndexOrThrow("EXTRA_BAGGAGE_PRICE"));
                 Flight.RecurrentType recurrent = Flight.RecurrentType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("RECURRENT")));
 
-                // Create Flight object and add to list
-                Flight flight = new Flight(destination, departureDate, arrivalDate,
-                        duration, flightNumber, departurePlace, departureTime, arrivalTime,
-                        aircraftModel, currentReservations, maxSeats, missedFlights, bookingOpenDate,
-                        economyClassPrice, businessClassPrice, extraBaggagePrice, recurrent);
+                Flight flight = new Flight( destination,  departureDate,  arrivalDate,
+                        duration,  flightNumber,  departurePlace,  departureTime,  arrivalTime,
+                        aircraftModel,  currentReservations,  maxSeats,  missedFlights,  bookingOpenDate,
+                        economyClassPrice ,businessClassPrice,extraBaggagePrice,recurrent);
                 oneWayFlightList.add(flight);
 
             } while (cursor.moveToNext());
 
             cursor.close();
 
-            // Set adapter for one-way flight results
             FlightAdapter adapter = new FlightAdapter(getContext(), oneWayFlightList);
             lvOneWayFlightResults.setAdapter(adapter);
 
-            // Set item click listener for one-way flights
             lvOneWayFlightResults.setOnItemClickListener((parent, view, position, id) -> showFlightDetailsDialog(oneWayFlightList.get(position)));
         } else {
-            oneWayFlightList.clear(); // Clear list if no results found
+            oneWayFlightList.clear(); // Clear the list if no results are found
             Toast.makeText(getContext(), "No flights found on one way for the specified criteria", Toast.LENGTH_SHORT).show();
 
-            // Update ListView to reflect cleared list
+            // Update the ListView to reflect the cleared list
             FlightAdapter adapter = new FlightAdapter(getContext(), oneWayFlightList);
             lvOneWayFlightResults.setAdapter(adapter);
         }
     }
 
-    // Display flight details in a dialog
+
     private void showFlightDetailsDialog(Flight flight) {
+
+
         String flightDetails = "Flight Number: " + flight.getFlightNumber() + "\n" +
                 "Departure Place: " + flight.getDeparturePlace() + "\n" +
                 "Destination: " + flight.getDestination() + "\n" +
@@ -273,8 +257,8 @@ public class SearchFlightsFragment extends Fragment {
                 "Economy Class Price: " + flight.getEconomyClassPrice() + "\n" +
                 "Business Class Price: " + flight.getBusinessClassPrice() + "\n" +
                 "Extra Baggage Price: " + flight.getExtraBaggagePrice() + "\n" +
-                "Current Reservations: " + flight.getCurrentReservations() + "\n" +
-                "Missed Flights: " + flight.getMissedFlights() + "\n" +
+                "Current Reservations: " + flight.getCurrentReservations()+"\n" +
+                "Missed Flights: " + flight.getMissedFlights()+"\n" +
                 "Recurrent: " + flight.getRecurrent();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -289,13 +273,11 @@ public class SearchFlightsFragment extends Fragment {
         builder.show();
     }
 
-    // Open reservation dialog for selected flight
     private void makeReservation(Flight flight) {
-        ReservationDialogFragment reservationDialogFragment = ReservationDialogFragment.newInstance(flight, savedUser, false, null);
+        ReservationDialogFragment reservationDialogFragment = ReservationDialogFragment.newInstance(flight,savedUser,false,null);
         reservationDialogFragment.show(getParentFragmentManager(), "reservationDialog");
     }
 
-    // Set up date picker for EditText
     private void setDatePicker(EditText editText) {
         editText.setOnClickListener(v -> {
             final Calendar c = Calendar.getInstance();
@@ -306,16 +288,18 @@ public class SearchFlightsFragment extends Fragment {
             DatePickerDialog datePickerDialog = new DatePickerDialog(
                     getContext(),
                     (view, year1, monthOfYear, dayOfMonth) -> {
-                        // Format the date as yyyy-MM-dd
+                        // Format the month and day to always be two digits
                         String formattedDate = String.format("%04d-%02d-%02d", year1, monthOfYear + 1, dayOfMonth);
 
-                        // Validate dates
+                        // Validate against etDepartureDate
                         if (editText == etDepartureDate) {
                             if (!isDateValid(formattedDate)) {
                                 Toast.makeText(getContext(), "Date cannot be earlier than today", Toast.LENGTH_SHORT).show();
                                 return;
                             }
                         }
+
+                        // Validate arrival date against departure date
                         if (editText == etReturnDate) {
                             String departureDate = etDepartureDate.getText().toString().trim();
                             if (!departureDate.isEmpty() && !isReturnDateValid(departureDate, formattedDate)) {
@@ -323,6 +307,8 @@ public class SearchFlightsFragment extends Fragment {
                                 return;
                             }
                         }
+
+                        // Validate departure date against arrival date
                         if (editText == etDepartureDate) {
                             String arrivalDate = etReturnDate.getText().toString().trim();
                             if (!arrivalDate.isEmpty() && !isReturnDateValid(formattedDate, arrivalDate)) {
@@ -337,7 +323,7 @@ public class SearchFlightsFragment extends Fragment {
         });
     }
 
-    // Check if selected date is valid (not earlier than today)
+
     private boolean isDateValid(String selectedDate) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         try {
@@ -349,8 +335,7 @@ public class SearchFlightsFragment extends Fragment {
         }
     }
 
-    // Check if return date is valid (not before departure date)
-    private boolean isReturnDateValid(String departureDate, String returnDate) {
+    private boolean isReturnDateValid(String departureDate, String returnDate){
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         try {
             Date depDate = format.parse(departureDate);
@@ -360,4 +345,5 @@ public class SearchFlightsFragment extends Fragment {
             return false;
         }
     }
+
 }
