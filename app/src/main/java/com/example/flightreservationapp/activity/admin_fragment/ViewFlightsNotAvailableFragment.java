@@ -18,19 +18,20 @@ import com.example.flightreservationapp.model.Flight;
 import com.example.flightreservationapp.utility.FlightAdapter;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class ViewFlightsNotAvailableFragment extends Fragment {
 
-    private ListView lvFlights;
-    private DataBaseHelper dbHelper;
-    private ArrayList<Flight> flightList;
+    private ListView lvFlights; // ListView to display flights not available for reservation
+    private DataBaseHelper dbHelper; // Database helper for querying flights
+    private ArrayList<Flight> flightList; // List to hold flights not available for reservation
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_view_flights_not_available, container, false);
 
+        // Initialize ListView and DatabaseHelper
         lvFlights = view.findViewById(R.id.lv_flights_not_available);
         dbHelper = new DataBaseHelper(getContext());
         flightList = new ArrayList<>();
@@ -38,11 +39,11 @@ public class ViewFlightsNotAvailableFragment extends Fragment {
         // Load all flights not yet open for reservation
         loadFlightsNotOpenForReservation();
 
-        // Set item click listener
+        // Set item click listener for the ListView
         lvFlights.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Show dialog with flight information
+                // Show a dialog with the selected flight's details
                 showFlightDetailsDialog(flightList.get(position));
             }
         });
@@ -50,12 +51,15 @@ public class ViewFlightsNotAvailableFragment extends Fragment {
         return view;
     }
 
+    // Method to load flights that are not yet available for reservation
     private void loadFlightsNotOpenForReservation() {
+        // Query the database for upcoming flights
         Cursor cursor = dbHelper.getUpcomingFlights();
-        flightList.clear();
+        flightList.clear(); // Clear the current flight list before adding new data
 
         if (cursor != null && cursor.moveToFirst()) {
             do {
+                // Extract flight details from the cursor
                 String flightNumber = cursor.getString(cursor.getColumnIndexOrThrow("FLIGHT_NUMBER"));
                 String departurePlace = cursor.getString(cursor.getColumnIndexOrThrow("DEPARTURE_PLACE"));
                 String destination = cursor.getString(cursor.getColumnIndexOrThrow("DESTINATION"));
@@ -74,27 +78,30 @@ public class ViewFlightsNotAvailableFragment extends Fragment {
                 double extraBaggagePrice = cursor.getDouble(cursor.getColumnIndexOrThrow("EXTRA_BAGGAGE_PRICE"));
                 Flight.RecurrentType recurrent = Flight.RecurrentType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("RECURRENT")));
 
-                Flight flight = new Flight( destination,  departureDate,  arrivalDate,
-                        duration,  flightNumber,  departurePlace,  departureTime,  arrivalTime,
-                        aircraftModel,  currentReservations,  maxSeats,  missedFlights,  bookingOpenDate,
-                        economyClassPrice ,businessClassPrice,extraBaggagePrice,recurrent);
+                // Create a Flight object and add it to the list
+                Flight flight = new Flight(destination, departureDate, arrivalDate,
+                        duration, flightNumber, departurePlace, departureTime, arrivalTime,
+                        aircraftModel, currentReservations, maxSeats, missedFlights, bookingOpenDate,
+                        economyClassPrice, businessClassPrice, extraBaggagePrice, recurrent);
                 flightList.add(flight);
 
-
-
             } while (cursor.moveToNext());
-            cursor.close();
+            cursor.close(); // Close the cursor to release resources
         }
 
+        // Set up the adapter for the ListView
         FlightAdapter adapter = new FlightAdapter(getContext(), flightList);
         lvFlights.setAdapter(adapter);
 
+        // Show a toast message if no flights are available
         if (flightList.isEmpty()) {
             Toast.makeText(getContext(), "No flights available for reservation", Toast.LENGTH_SHORT).show();
         }
     }
 
+    // Method to show flight details in a dialog
     private void showFlightDetailsDialog(Flight flight) {
+        // Create a string with the flight details
         String flightDetails = "Flight Number: " + flight.getFlightNumber() + "\n" +
                 "Departure Place: " + flight.getDeparturePlace() + "\n" +
                 "Destination: " + flight.getDestination() + "\n" +
@@ -109,10 +116,11 @@ public class ViewFlightsNotAvailableFragment extends Fragment {
                 "Economy Class Price: " + flight.getEconomyClassPrice() + "\n" +
                 "Business Class Price: " + flight.getBusinessClassPrice() + "\n" +
                 "Extra Baggage Price: " + flight.getExtraBaggagePrice() + "\n" +
-                "Recurrent: " + flight.getRecurrent()+"\n" +
-                "Current Reservations: " + flight.getCurrentReservations()+"\n" +
+                "Recurrent: " + flight.getRecurrent() + "\n" +
+                "Current Reservations: " + flight.getCurrentReservations() + "\n" +
                 "Missed Flights: " + flight.getMissedFlights();
 
+        // Build and show the dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Flight Details")
                 .setMessage(flightDetails)

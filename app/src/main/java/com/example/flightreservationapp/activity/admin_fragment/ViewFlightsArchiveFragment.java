@@ -51,6 +51,7 @@ public class ViewFlightsArchiveFragment extends Fragment {
     }
 
     private void loadOpenFlights() {
+        //make query to get flights
         Cursor cursor = dbHelper.getArchive();
         archiveFlightList.clear();
 
@@ -91,7 +92,7 @@ public class ViewFlightsArchiveFragment extends Fragment {
             Toast.makeText(getContext(), "No flights available for reservation", Toast.LENGTH_SHORT).show();
         }
     }
-    //show flights info
+    //show flights information
     private void showFlightDetailsDialog(Flight flight) {
         String flightDetails = "Flight Number: " + flight.getFlightNumber() + "\n" +
                 "Departure Place: " + flight.getDeparturePlace() + "\n" +

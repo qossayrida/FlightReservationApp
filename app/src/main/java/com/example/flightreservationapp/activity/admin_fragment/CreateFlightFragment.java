@@ -26,17 +26,20 @@ import java.util.Date;
 
 public class CreateFlightFragment extends Fragment {
 
+    // Declare all UI components for flight creation form
     private EditText etFlightNumber, etDepartureDate,
             etDepartureTime, etArrivalDate, etArrivalTime, etDuration, etAircraftModel, etMaxSeats,
             etBookingOpenDate, etPriceEconomy, etPriceBusiness, etPriceExtraBaggage;
-    private Spinner spDeparturePlace,spDestination ,spinnerRecurrent;
+    private Spinner spDeparturePlace, spDestination, spinnerRecurrent;
     private Button btnSubmit;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_create_flight, container, false);
 
+        // Initialize UI components
         etFlightNumber = view.findViewById(R.id.et_flight_number);
         spDeparturePlace = view.findViewById(R.id.sp_departure_place);
         spDestination = view.findViewById(R.id.sp_destination);
@@ -54,9 +57,10 @@ public class CreateFlightFragment extends Fragment {
         spinnerRecurrent = view.findViewById(R.id.spinner_recurrent);
         btnSubmit = view.findViewById(R.id.btn_submit);
 
-        // Date & Time Pickers
+        // Set up date and time pickers for relevant fields
         setUpDateAndTimePickers();
 
+        // Set up button click listener to handle form submission
         btnSubmit.setOnClickListener(v -> {
             // Collect the data from input fields
             String flightNumber = etFlightNumber.getText().toString().trim();
@@ -75,7 +79,7 @@ public class CreateFlightFragment extends Fragment {
             String priceExtraBaggageStr = etPriceExtraBaggage.getText().toString().trim();
             String recurrent = spinnerRecurrent.getSelectedItem().toString();
 
-            // Validate the input data
+            // Validate the input data to ensure all fields are filled
             if (flightNumber.isEmpty() || departurePlace.isEmpty() || destination.isEmpty() || departureDate.isEmpty() ||
                     departureTime.isEmpty() || arrivalDate.isEmpty() || arrivalTime.isEmpty() || durationStr.isEmpty() ||
                     aircraftModel.isEmpty() || maxSeatsStr.isEmpty() || bookingOpenDate.isEmpty() || priceEconomyStr.isEmpty() ||
@@ -84,6 +88,7 @@ public class CreateFlightFragment extends Fragment {
                 return;
             }
 
+            // Convert string inputs to appropriate types
             int duration = Integer.parseInt(durationStr);
             int maxSeats = Integer.parseInt(maxSeatsStr);
             double priceEconomy = Double.parseDouble(priceEconomyStr);
@@ -112,21 +117,24 @@ public class CreateFlightFragment extends Fragment {
             values.put("CURRENT_RESERVATIONS", 0); // Initial reservations set to 0
             values.put("MISSED_FLIGHTS", 0); // Initial missed flights set to 0
 
+            // Check if the data was successfully inserted
             long result = db.insert("FLIGHTS", null, values);
 
+            // Display appropriate message based on the result
             if (result != -1) {
                 Toast.makeText(getContext(), "Flight created successfully", Toast.LENGTH_SHORT).show();
-                clearFields();
+                clearFields(); // Clear the form fields after successful submission
             } else {
                 Toast.makeText(getContext(), "Failed to create flight", Toast.LENGTH_SHORT).show();
             }
 
-            db.close(); // Close the database after operation
+            db.close(); // Close the database after the operation
         });
 
         return view;
     }
 
+    // Clear the input fields after successful submission
     private void clearFields() {
         etFlightNumber.setText("");
         spDeparturePlace.setSelection(0);
@@ -145,6 +153,7 @@ public class CreateFlightFragment extends Fragment {
         spinnerRecurrent.setSelection(0);
     }
 
+    // Set up the date and time pickers for relevant fields
     private void setUpDateAndTimePickers() {
         setDatePicker(etDepartureDate);
         setTimePicker(etDepartureTime);
@@ -153,6 +162,7 @@ public class CreateFlightFragment extends Fragment {
         setDatePicker(etBookingOpenDate);
     }
 
+    // Set up date picker dialog for a specific EditText field
     private void setDatePicker(EditText editText) {
         editText.setOnClickListener(v -> {
             final Calendar c = Calendar.getInstance();
@@ -163,7 +173,7 @@ public class CreateFlightFragment extends Fragment {
             DatePickerDialog datePickerDialog = new DatePickerDialog(
                     getContext(),
                     (view, year1, monthOfYear, dayOfMonth) -> {
-                        // Format the month and day to always be two digits
+                        // Format the selected date as yyyy-MM-dd
                         String formattedDate = String.format("%04d-%02d-%02d", year1, monthOfYear + 1, dayOfMonth);
 
                         // Validate against current date for etBookingOpenDate and etDepartureDate
@@ -187,83 +197,19 @@ public class CreateFlightFragment extends Fragment {
                         if (editText == etArrivalDate) {
                             String departureDate = etDepartureDate.getText().toString().trim();
                             if (!departureDate.isEmpty() && !isArrivalDateValid(departureDate, formattedDate)) {
-                                Toast.makeText(getContext(), "Arrival date must be later than departure date", Toast.LENGTH_SHORT).show();
-                                return;
-                            }
-                        }
-
-                        // Validate departure date against arrival date
-                        if (editText == etDepartureDate) {
-                            String arrivalDate = etArrivalDate.getText().toString().trim();
-                            if (!arrivalDate.isEmpty() && !isArrivalDateValid(formattedDate, arrivalDate)) {
-                                Toast.makeText(getContext(), "Departure date cannot be later than arrival date", Toast.LENGTH_SHORT).show();
-                                return;
-                            }
-
-                            // Also validate against booking open date
-                            String bookingOpenDate = etBookingOpenDate.getText().toString().trim();
-                            if (!bookingOpenDate.isEmpty() && !isBookingOpenDateValid(bookingOpenDate, formattedDate)) {
-                                Toast.makeText(getContext(), "Departure date cannot be earlier than the booking open date", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "Arrival date must be on or after the departure date", Toast.LENGTH_SHORT).show();
                                 return;
                             }
                         }
 
                         editText.setText(formattedDate);
-
-                        // After the date is set, calculate the duration
-                        int duration = calculateDuration(
-                                etDepartureDate.getText().toString().trim(),
-                                etDepartureTime.getText().toString().trim(),
-                                etArrivalDate.getText().toString().trim(),
-                                etArrivalTime.getText().toString().trim()
-                        );
-
-                        // Check if duration calculation was successful
-                        if (duration != -1) {
-                            etDuration.setText(String.valueOf(duration)); // Set duration in minutes
-                        } else {
-                            etDuration.setText(""); // Clear duration if calculation failed
-                        }
                     },
                     year, month, day);
-            datePickerDialog.getDatePicker().setMinDate(c.getTimeInMillis()); // Set minimum date to current date
             datePickerDialog.show();
         });
     }
 
-    private boolean isDateValid(String selectedDate) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        try {
-            Date date = format.parse(selectedDate);
-            Date currentDate = new Date();
-            return !date.before(currentDate); // Date should not be before today
-        } catch (ParseException e) {
-            return false;
-        }
-    }
-
-    private boolean isArrivalDateValid(String departureDate, String arrivalDate) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        try {
-            Date depDate = format.parse(departureDate);
-            Date arrDate = format.parse(arrivalDate);
-            return !arrDate.before(depDate); // Arrival date should not be before departure date
-        } catch (ParseException e) {
-            return false;
-        }
-    }
-
-    private boolean isBookingOpenDateValid(String bookingOpenDate, String departureDate) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        try {
-            Date bookOpenDate = format.parse(bookingOpenDate);
-            Date depDate = format.parse(departureDate);
-            return !bookOpenDate.after(depDate); // Booking open date should not be after departure date
-        } catch (ParseException e) {
-            return false;
-        }
-    }
-
+    // Set up time picker dialog for a specific EditText field
     private void setTimePicker(EditText editText) {
         editText.setOnClickListener(v -> {
             final Calendar c = Calendar.getInstance();
@@ -273,73 +219,51 @@ public class CreateFlightFragment extends Fragment {
             TimePickerDialog timePickerDialog = new TimePickerDialog(
                     getContext(),
                     (view, hourOfDay, minute1) -> {
-                        // Format the time to always be two digits
+                        // Format the selected time as HH:mm
                         String formattedTime = String.format("%02d:%02d", hourOfDay, minute1);
-
-
-
-                        // Additional check if the departure and arrival dates are the same
-                        if (editText == etArrivalTime) {
-                            String departureDate = etDepartureDate.getText().toString().trim();
-                            String arrivalDate = etArrivalDate.getText().toString().trim();
-                            String departureTime = etDepartureTime.getText().toString().trim();
-                            if (!departureDate.isEmpty() && !arrivalDate.isEmpty() && departureDate.equals(arrivalDate)) {
-                                if (!departureTime.isEmpty() && !isArrivalTimeValid(departureTime, formattedTime)) {
-                                    Toast.makeText(getContext(), "Arrival time must be later than departure time", Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-                            }
-                        }
-
                         editText.setText(formattedTime);
-                        // After the time is set, calculate the duration
-                        int duration = calculateDuration(
-                                etDepartureDate.getText().toString().trim(),
-                                etDepartureTime.getText().toString().trim(),
-                                etArrivalDate.getText().toString().trim(),
-                                etArrivalTime.getText().toString().trim()
-                        );
-
-                        // Check if duration calculation was successful
-                        if (duration != -1) {
-                            etDuration.setText(String.valueOf(duration)); // Set duration in minutes
-                        } else {
-                            etDuration.setText(""); // Clear duration if calculation failed
-                        }
                     },
-                    hour, minute, false);
+                    hour, minute, true);
             timePickerDialog.show();
         });
     }
 
-
-    private int calculateDuration(String departureDate, String departureTime, String arrivalDate, String arrivalTime) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    // Validate that a date is not earlier than today's date
+    private boolean isDateValid(String dateStr) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            Date depDateTime = format.parse(departureDate + " " + departureTime);
-            Date arrDateTime = format.parse(arrivalDate + " " + arrivalTime);
-
-            long difference = arrDateTime.getTime() - depDateTime.getTime();
-
-            long diffMinutes = difference / (60 * 1000);
-
-            return (int) diffMinutes;
-
-        } catch (ParseException e) {
-            return -1; // Return -1 to indicate an error in calculation
-        }
-    }
-
-    private boolean isArrivalTimeValid(String departureTime, String arrivalTime) {
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-        try {
-            Date depTime = sdf.parse(departureTime);
-            Date arrTime = sdf.parse(arrivalTime);
-            return !arrTime.before(depTime);
+            Date selectedDate = sdf.parse(dateStr);
+            Date currentDate = new Date();
+            return selectedDate != null && !selectedDate.before(currentDate);
         } catch (ParseException e) {
             e.printStackTrace();
         }
         return false;
     }
 
+    // Validate that the booking open date is on or before the departure date
+    private boolean isBookingOpenDateValid(String bookingOpenDate, String departureDate) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date bookingDate = sdf.parse(bookingOpenDate);
+            Date depDate = sdf.parse(departureDate);
+            return bookingDate != null && depDate != null && !bookingDate.after(depDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // Validate that the arrival date is on or after the departure date
+    private boolean isArrivalDateValid(String departureDate, String arrivalDate) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date depDate = sdf.parse(departureDate);
+            Date arrDate = sdf.parse(arrivalDate);
+            return depDate != null && arrDate != null && !arrDate.before(depDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
