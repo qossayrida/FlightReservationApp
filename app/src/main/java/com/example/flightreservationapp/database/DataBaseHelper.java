@@ -10,6 +10,7 @@ import android.util.Log;
 import com.example.flightreservationapp.model.*;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -455,5 +456,65 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         // Execute the query and return the Cursor containing the result set
         return db.rawQuery(query, new String[]{currentDate,currentDate});
     }
+
+
+    public Cursor getTomorrowsFlightsForUser(String passportNumber) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        // Get tomorrow's date in the same format as stored in the database
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, 1);
+        String tomorrowDate = sdf.format(calendar.getTime());
+
+        // Query to get the flights for tomorrow for the given user
+        String query = "SELECT FLIGHTS.FLIGHT_NUMBER, FLIGHTS.DEPARTURE_PLACE, FLIGHTS.DESTINATION, " +
+                "FLIGHTS.DEPARTURE_DATE, FLIGHTS.DEPARTURE_TIME " +
+                "FROM FLIGHTS " +
+                "INNER JOIN RESERVATIONS ON FLIGHTS.FLIGHT_NUMBER = RESERVATIONS.FLIGHT_NUMBER " +
+                "WHERE RESERVATIONS.PASSPORT_NUMBER = ? AND FLIGHTS.DEPARTURE_DATE = ?";
+
+        return db.rawQuery(query, new String[]{passportNumber, tomorrowDate});
+    }
+
+    public void createTomorrowFlightNotifications(String passportNumber) {
+        Cursor cursor = getTomorrowsFlightsForUser(passportNumber);
+        SQLiteDatabase db = getWritableDatabase();
+
+        while (cursor.moveToNext()) {
+            String flightNumber = cursor.getString(cursor.getColumnIndexOrThrow("FLIGHT_NUMBER"));
+            String departurePlace = cursor.getString(cursor.getColumnIndexOrThrow("DEPARTURE_PLACE"));
+            String destination = cursor.getString(cursor.getColumnIndexOrThrow("DESTINATION"));
+            String departureDate = cursor.getString(cursor.getColumnIndexOrThrow("DEPARTURE_DATE"));
+            String departureTime = cursor.getString(cursor.getColumnIndexOrThrow("DEPARTURE_TIME"));
+
+            // Check if a notification already exists for this flight and user
+            String checkQuery = "SELECT COUNT(*) FROM NOTIFICATIONS " +
+                    "WHERE PASSPORT_NUMBER = ? AND FLIGHT_NUMBER = ?";
+
+            Cursor checkCursor = db.rawQuery(checkQuery, new String[]{passportNumber, flightNumber});
+            checkCursor.moveToFirst();
+            int count = checkCursor.getInt(0);
+            checkCursor.close();
+
+            if (count == 0) {  // No existing notification found
+                String notificationId = "notif_" + System.currentTimeMillis();
+                String message = "Reminder: Your flight " + flightNumber + " from " + departurePlace +
+                        " to " + destination + " is scheduled for tomorrow (" +
+                        departureDate + " at " + departureTime + ").";
+
+                ContentValues notificationValues = new ContentValues();
+                notificationValues.put("NOTIFICATION_ID", notificationId);
+                notificationValues.put("PASSPORT_NUMBER", passportNumber);
+                notificationValues.put("FLIGHT_NUMBER", flightNumber);
+                notificationValues.put("MESSAGE", message);
+
+                db.insert("NOTIFICATIONS", null, notificationValues);
+            }
+        }
+        cursor.close();
+    }
+
+
 
 }

@@ -163,8 +163,11 @@ public class MainActivity extends AppCompatActivity {
             sharedPrefManager.writeString("userJson", userJson);
 
             // Show unread notifications for the user
-            if(!user.getRole().equals("Admin"))
+            if(!user.getRole().equals("Admin")){
                 showUnreadNotifications(user.getPassportNumber());
+                dataBaseHelper.createTomorrowFlightNotifications(user.getPassportNumber());
+            }
+
 
             Intent intent = new Intent(this, NavigationDrawerActivity.class);
             startActivity(intent);
